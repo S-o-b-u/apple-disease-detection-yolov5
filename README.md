@@ -8,8 +8,6 @@ A deep learning-based system to detect and classify apple leaf diseases using th
 
 ![image](https://github.com/user-attachments/assets/1aa8b33b-4d02-4450-b502-9dfb753857e1)
 
-![Detection Example](https://ibb.co/VYKnsmzH) <!-- Replace with actual image -->
-
 ---
 
 ## 📊 Model Evaluation
@@ -20,7 +18,7 @@ We used several performance metrics to evaluate the trained YOLOv5 model:
 
 The confusion matrix provides a summary of prediction results for each class (Healthy, Rust, Scab).
 
-![Confusion Matrix](https://ibb.co/C3xGLJHF) <!-- Replace with your image link -->
+![image](https://github.com/user-attachments/assets/139145d1-b651-4baa-ae6d-15872e0c672f)
 
 ---
 
@@ -28,7 +26,8 @@ The confusion matrix provides a summary of prediction results for each class (He
 
 Receiver Operating Characteristic (ROC) curves were generated to visualize the model's ability to separate classes. The Area Under the Curve (AUC) is also shown for each disease class.
 
-![ROC Curve](https://ibb.co/VWFHTZzP) <!-- Replace with your image link -->
+![image](https://github.com/user-attachments/assets/994469fe-b438-426d-b39d-0db25675d656)
+
 
 ---
 
