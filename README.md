@@ -4,64 +4,63 @@ A deep learning-based system to detect and classify apple leaf diseases using th
 
 ---
 
-## 📸 Demo
+## 📸 Demo: Detection Result
 
-![Prediction Example](https://your-image-link-here.com) <!-- Replace with your own hosted image or GIF -->
+![Detection Example](https://ibb.co/VYKnsmzH) <!-- Replace with actual image -->
 
 ---
 
-## 📂 Dataset
+## 📊 Model Evaluation
 
-We used a labeled dataset containing images of apple leaves with annotations for the following classes:
+We used several performance metrics to evaluate the trained YOLOv5 model:
+
+### 📌 Confusion Matrix
+
+The confusion matrix provides a summary of prediction results for each class (Healthy, Rust, Scab).
+
+![Confusion Matrix](https://ibb.co/C3xGLJHF) <!-- Replace with your image link -->
+
+---
+
+### 📈 ROC Curves
+
+Receiver Operating Characteristic (ROC) curves were generated to visualize the model's ability to separate classes. The Area Under the Curve (AUC) is also shown for each disease class.
+
+![ROC Curve](https://ibb.co/VWFHTZzP) <!-- Replace with your image link -->
+
+---
+
+## 🧪 Classes Detected
 
 - ✅ Healthy
 - 🍂 Scab
 - 🔴 Rust
-
-Annotations were in YOLO format, containing bounding boxes and class IDs.
 
 ---
 
 ## 🛠️ Technologies Used
 
 - Python 🐍
-- [YOLOv5](https://github.com/ultralytics/yolov5) (Ultralytics)
+- [YOLOv5](https://github.com/ultralytics/yolov5)
 - PyTorch
 - OpenCV
 - Matplotlib
-- Scikit-learn (for evaluation)
-- Google Colab / Jupyter Notebook
+- Scikit-learn
 
 ---
 
 ## 🚀 Features
 
-- 🔍 Real-time object detection of apple leaf diseases.
-- 📦 Supports multiple instances in a single image.
-- 📊 Evaluation metrics: Confusion matrix, ROC and AUC curves.
-- 📈 Training and validation curve visualization.
-- 💾 Custom dataset support (YOLO format).
-
----
-
-## 🧪 Model Evaluation
-
-We evaluate the model using:
-- Confusion Matrix
-- ROC Curve (per class)
-- AUC Score
-- Precision, Recall, F1 Score
-
-> These are visualized in our `evaluate_model.ipynb` notebook.
+- 🔍 Real-time detection of multiple leaf diseases
+- 📦 Multiple object support per image
+- 📊 Evaluation metrics and visualizations
+- 📈 Training & validation tracking
 
 ---
 
 ## 📥 Installation
 
 ```bash
-# Clone the repo
 git clone https://github.com/your-username/apple-leaf-disease-detector.git
 cd apple-leaf-disease-detector
-
-# Install dependencies
 pip install -r requirements.txt
