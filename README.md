@@ -6,6 +6,8 @@ A deep learning-based system to detect and classify apple leaf diseases using th
 
 ## 📸 Demo: Detection Result
 
+![image](https://github.com/user-attachments/assets/1aa8b33b-4d02-4450-b502-9dfb753857e1)
+
 ![Detection Example](https://ibb.co/VYKnsmzH) <!-- Replace with actual image -->
 
 ---
