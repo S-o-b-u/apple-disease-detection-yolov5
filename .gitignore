@@ -1,0 +1,11 @@
+# Ignore virtual environment
+venv/
+__pycache__/
+
+# Ignore generated media
+*.jpg
+*.pdf
+*.mp3
+
+# Ignore model weights
+backend/model/best.pt
