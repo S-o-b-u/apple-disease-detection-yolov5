@@ -40,8 +40,8 @@ def detect_disease(file):
     # ✅ Save uploaded image
     img = Image.open(file.file).convert("RGB")
     image_name = f"{uuid.uuid4().hex}.jpg"
-    input_path = os.path.join(STATIC_DIR, image_name)
-    img.save(input_path)
+    image_path = os.path.join(STATIC_DIR, image_name)
+    img.save(image_path)
 
     # ✅ Run model prediction
     results = model(input_path)
