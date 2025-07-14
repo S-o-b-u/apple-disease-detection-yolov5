@@ -2,7 +2,6 @@ fastapi
 uvicorn
 torch
 Pillow
-numpy
 googletrans==4.0.0-rc1
 fpdf
 python-multipart

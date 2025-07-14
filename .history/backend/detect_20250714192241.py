@@ -9,26 +9,18 @@ import torch
 from PIL import Image
 import uuid
 import os
-import requests
-
-# ✅ Manually patch torch.hub to use token for authentication
-GITHUB_TOKEN = "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"
-os.environ["GITHUB_TOKEN"] = GITHUB_TOKEN
-if GITHUB_TOKEN:
-    torch.hub._DEFAULT_GITHUB_TOKEN = GITHUB_TOKEN
-    torch.hub._validate_not_a_forked_repo = lambda *args, **kwargs: None  # Optional: disable fork validation if needed
 
 # ✅ Define static directory path (inside /backend/static)
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 os.makedirs(STATIC_DIR, exist_ok=True)
 
-# ✅ Load the YOLOv5 model (custom-trained weights)
+# Load the YOLOv5 model (custom-trained weights)
 model = torch.hub.load(
-    repo_or_dir='ultralytics/yolov5',
-    model='custom',
+    'ultralytics/yolov5',
+    'custom',
     path='model/best.pt',
     source='github',
-    force_reload=True,
+    force_reload=True
 )
 
 TREATMENTS = {
