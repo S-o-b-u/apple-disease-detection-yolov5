@@ -1,28 +1,28 @@
 import platform
 import pathlib
-
-# ✅ Fix for Windows to avoid PosixPath error
-if platform.system() == "Windows":
-    pathlib.PosixPath = pathlib.WindowsPath
-
 import torch
 from PIL import Image
 import uuid
 import os
 
-# ✅ Define static directory path (inside /backend/static)
+# ✅ Fix for Windows: prevent PosixPath errors
+if platform.system() == "Windows":
+    pathlib.PosixPath = pathlib.WindowsPath
+
+# ✅ Set up static/ directory to save images
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 os.makedirs(STATIC_DIR, exist_ok=True)
 
-# Load the YOLOv5 model (custom-trained weights)
+# ✅ Load the YOLOv5 model from torch.hub
 model = torch.hub.load(
-    'ultralytics/yolov5',
-    'custom',
-    path='model/best.pt',
-    source='github',
-    force_reload=True
+    'ultralytics/yolov5',         # source repo
+    'custom',                     # model type
+    path='model/best.pt',         # your trained weights
+    source='github',              # download if not present
+    force_reload=True             # force re-download if needed
 )
 
+# ✅ Dictionary of treatments
 TREATMENTS = {
     "Rust": "Use Myclobutanil fungicide. Remove infected leaves.",
     "Scab": "Use Captan or Mancozeb fungicides.",
@@ -30,11 +30,10 @@ TREATMENTS = {
 }
 
 def detect_disease(file):
-    # ✅ Clean static/ folder
+    # ✅ Clean up old files in static/
     for f in os.listdir(STATIC_DIR):
-        file_path = os.path.join(STATIC_DIR, f)
         try:
-            os.remove(file_path)
+            os.remove(os.path.join(STATIC_DIR, f))
         except Exception:
             pass
 
@@ -44,25 +43,20 @@ def detect_disease(file):
     input_path = os.path.join(STATIC_DIR, image_name)
     img.save(input_path)
 
-    # ✅ Run detection
+    # ✅ Run model prediction
     results = model(input_path)
 
-    # ✅ Render image with bounding boxes in memory
-    rendered = results.render()[0]  # returns numpy array
-
-    # ✅ Save rendered image manually — no YOLO .save() used
+    # ✅ Render bounding boxes on image
+    rendered = results.render()[0]
     from PIL import Image as PILImage
-    rendered_image = PILImage.fromarray(rendered)
-    rendered_image.save(input_path)  # overwrite original image
+    rendered_img = PILImage.fromarray(rendered)
+    rendered_img.save(input_path)
 
-    # ✅ Extract disease name
+    # ✅ Parse prediction
     df = results.pandas().xyxy[0]
-    if df.empty:
-        disease = "Healthy"
-    else:
-        disease = df["name"][0].capitalize()
+    disease = "Healthy" if df.empty else df["name"][0].capitalize()
 
-    # ✅ Treatment lookup
+    # ✅ Treatment suggestion
     treatment = TREATMENTS.get(disease, "No treatment found.")
 
     return image_name, disease, treatment
