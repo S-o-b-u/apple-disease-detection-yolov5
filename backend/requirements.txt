@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+torch
+Pillow
+googletrans==4.0.0-rc1
+fpdf
+python-multipart
+gtts
