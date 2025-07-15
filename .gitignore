@@ -7,6 +7,6 @@ __pycache__/
 *.jpg
 *.pdf
 *.mp3
-
+.history
 # Ignore model weights
 backend/model/best.pt

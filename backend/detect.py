@@ -12,7 +12,7 @@ import os
 import requests
 
 # ✅ Manually patch torch.hub to use token for authentication
-GITHUB_TOKEN = "github access token"
+GITHUB_TOKEN = "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"
 os.environ["GITHUB_TOKEN"] = GITHUB_TOKEN
 if GITHUB_TOKEN:
     torch.hub._DEFAULT_GITHUB_TOKEN = GITHUB_TOKEN
