@@ -1,15 +1,29 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Clock, Send, CheckCircle, AlertCircle, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Navigation } from '@/components/Navigation';
-import { GLASSMORPHISM_STYLES, NEON_GRADIENTS } from '@/lib/constants';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
+  Send,
+  CheckCircle,
+  AlertCircle,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Instagram,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Navigation } from "@/components/Navigation";
+import { GLASSMORPHISM_STYLES, NEON_GRADIENTS } from "@/lib/constants";
+import SplitText from "@/components/animations/SplitText";
+import ShinyText from "@/components/animations/ShinyText";
 
 interface FormData {
   fullName: string;
@@ -27,13 +41,13 @@ interface FormErrors {
 }
 
 export default function ContactPage() {
-  const [currentLanguage, setCurrentLanguage] = useState('en');
+  const [currentLanguage, setCurrentLanguage] = useState("en");
   const [formData, setFormData] = useState<FormData>({
-    fullName: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: ''
+    fullName: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,23 +57,23 @@ export default function ContactPage() {
     const newErrors: FormErrors = {};
 
     if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
+      newErrors.fullName = "Full name is required";
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email address is required';
+      newErrors.email = "Email address is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address";
     }
 
     if (!formData.subject.trim()) {
-      newErrors.subject = 'Subject is required';
+      newErrors.subject = "Subject is required";
     }
 
     if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
+      newErrors.message = "Message is required";
     } else if (formData.message.length < 10) {
-      newErrors.message = 'Message must be at least 10 characters long';
+      newErrors.message = "Message must be at least 10 characters long";
     }
 
     setErrors(newErrors);
@@ -68,60 +82,62 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsSubmitting(true);
-    
+
     // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     setIsSubmitting(false);
     setIsSubmitted(true);
     setFormData({
-      fullName: '',
-      email: '',
-      phone: '',
-      subject: '',
-      message: ''
+      fullName: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
     });
   };
 
   const handleInputChange = (field: keyof FormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
 
   const contactInfo = [
     {
       icon: MapPin,
-      title: 'Address',
-      content: '123 Agriculture Tech Drive\nSilicon Valley, CA 94025\nUnited States'
+      title: "Address",
+      content:
+        "157/F, Nilgunj Rd, Sahid Colony, Panihati, Khardaha, West Bengal 700114",
     },
     {
       icon: Phone,
-      title: 'Phone',
-      content: '+1 (555) 123-4567'
+      title: "Phone",
+      content: "9432012681 / 9073683911 / 9073322523",
     },
     {
       icon: Mail,
-      title: 'Email',
-      content: 'contact@applediseaseai.com'
+      title: "Email",
+      content: "contact@applediseaseai.com",
     },
     {
       icon: Clock,
-      title: 'Business Hours',
-      content: 'Monday - Friday: 9:00 AM - 6:00 PM PST\nSaturday: 10:00 AM - 4:00 PM PST\nSunday: Closed'
-    }
+      title: "Business Hours",
+      content:
+        "Monday - Friday: 9:00 AM - 6:00 PM PST\nSaturday: 10:00 AM - 4:00 PM PST\nSunday: Closed",
+    },
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: '#', label: 'Facebook' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Instagram, href: '#', label: 'Instagram' }
+    { icon: Facebook, href: "#", label: "Facebook" },
+    { icon: Twitter, href: "#", label: "Twitter" },
+    { icon: Linkedin, href: "#", label: "LinkedIn" },
+    { icon: Instagram, href: "#", label: "Instagram" },
   ];
 
   return (
@@ -133,9 +149,9 @@ export default function ContactPage() {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-500/20 rounded-full blur-3xl animate-pulse" />
       </div>
 
-      <Navigation 
-        currentLanguage={currentLanguage} 
-        onLanguageChange={setCurrentLanguage} 
+      <Navigation
+        currentLanguage={currentLanguage}
+        onLanguageChange={setCurrentLanguage}
       />
 
       <main className="relative z-10 pt-24 pb-16">
@@ -147,12 +163,28 @@ export default function ContactPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Contact Us
-            </h1>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto">
-              Get in touch with our team of agricultural AI experts. We're here to help you protect your crops and maximize your harvest.
-            </p>
+            {/* Wrap SplitText to force full width */}
+            <div className="w-full">
+              <SplitText
+                text="Contact Us"
+                className="text-5xl md:text-6xl font-extrabold text-white"
+                delay={80}
+                duration={0.6}
+                ease="power3.out"
+                splitType="chars"
+                from={{ opacity: 0, y: 40 }}
+                to={{ opacity: 1, y: 0 }}
+                rootMargin="-100px"
+                threshold={0.2}
+              />
+            </div>
+
+            {/* Push ShinyText below it */}
+            <ShinyText
+              text="Get in touch with our team of agricultural AI experts. We're here to help you protect your crops and maximize your harvest."
+              speed={4}
+              className="text-xl max-w-2xl mx-auto text-center mt-6"
+            />
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -162,9 +194,13 @@ export default function ContactPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <Card className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl`}>
+              <Card
+                className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl`}
+              >
                 <CardHeader>
-                  <CardTitle className="text-2xl font-bold text-white">Send us a Message</CardTitle>
+                  <CardTitle className="text-2xl font-bold text-white">
+                    Send us a Message
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   {isSubmitted ? (
@@ -174,8 +210,13 @@ export default function ContactPage() {
                       className="text-center py-8"
                     >
                       <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold text-white mb-2">Message Sent Successfully!</h3>
-                      <p className="text-white/80">Thank you for contacting us. We'll get back to you within 24 hours.</p>
+                      <h3 className="text-xl font-semibold text-white mb-2">
+                        Message Sent Successfully!
+                      </h3>
+                      <p className="text-white/80">
+                        Thank you for contacting us. We'll get back to you
+                        within 24 hours.
+                      </p>
                       <Button
                         onClick={() => setIsSubmitted(false)}
                         className={`mt-4 bg-gradient-to-r ${NEON_GRADIENTS.primary} hover:shadow-lg hover:shadow-purple-500/25 text-white font-medium rounded-xl`}
@@ -187,32 +228,46 @@ export default function ContactPage() {
                     <form onSubmit={handleSubmit} className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <label htmlFor="fullName" className="block text-white/80 text-sm font-medium mb-2">
+                          <label
+                            htmlFor="fullName"
+                            className="block text-white/80 text-sm font-medium mb-2"
+                          >
                             Full Name *
                           </label>
                           <Input
                             id="fullName"
                             type="text"
                             value={formData.fullName}
-                            onChange={(e) => handleInputChange('fullName', e.target.value)}
-                            className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50 ${
-                              errors.fullName ? 'border-red-500' : ''
+                            onChange={(e) =>
+                              handleInputChange("fullName", e.target.value)
+                            }
+                            className={`${
+                              GLASSMORPHISM_STYLES.base
+                            } border-white/30 text-white placeholder:text-white/50 ${
+                              errors.fullName ? "border-red-500" : ""
                             }`}
                             placeholder="Enter your full name"
                           />
                           {errors.fullName && (
-                            <p className="text-red-400 text-sm mt-1">{errors.fullName}</p>
+                            <p className="text-red-400 text-sm mt-1">
+                              {errors.fullName}
+                            </p>
                           )}
                         </div>
                         <div>
-                          <label htmlFor="phone" className="block text-white/80 text-sm font-medium mb-2">
+                          <label
+                            htmlFor="phone"
+                            className="block text-white/80 text-sm font-medium mb-2"
+                          >
                             Phone Number
                           </label>
                           <Input
                             id="phone"
                             type="tel"
                             value={formData.phone}
-                            onChange={(e) => handleInputChange('phone', e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("phone", e.target.value)
+                            }
                             className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50`}
                             placeholder="(555) 123-4567"
                           />
@@ -220,58 +275,85 @@ export default function ContactPage() {
                       </div>
 
                       <div>
-                        <label htmlFor="email" className="block text-white/80 text-sm font-medium mb-2">
+                        <label
+                          htmlFor="email"
+                          className="block text-white/80 text-sm font-medium mb-2"
+                        >
                           Email Address *
                         </label>
                         <Input
                           id="email"
                           type="email"
                           value={formData.email}
-                          onChange={(e) => handleInputChange('email', e.target.value)}
-                          className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50 ${
-                            errors.email ? 'border-red-500' : ''
+                          onChange={(e) =>
+                            handleInputChange("email", e.target.value)
+                          }
+                          className={`${
+                            GLASSMORPHISM_STYLES.base
+                          } border-white/30 text-white placeholder:text-white/50 ${
+                            errors.email ? "border-red-500" : ""
                           }`}
                           placeholder="your.email@example.com"
                         />
                         {errors.email && (
-                          <p className="text-red-400 text-sm mt-1">{errors.email}</p>
+                          <p className="text-red-400 text-sm mt-1">
+                            {errors.email}
+                          </p>
                         )}
                       </div>
 
                       <div>
-                        <label htmlFor="subject" className="block text-white/80 text-sm font-medium mb-2">
+                        <label
+                          htmlFor="subject"
+                          className="block text-white/80 text-sm font-medium mb-2"
+                        >
                           Subject *
                         </label>
                         <Input
                           id="subject"
                           type="text"
                           value={formData.subject}
-                          onChange={(e) => handleInputChange('subject', e.target.value)}
-                          className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50 ${
-                            errors.subject ? 'border-red-500' : ''
+                          onChange={(e) =>
+                            handleInputChange("subject", e.target.value)
+                          }
+                          className={`${
+                            GLASSMORPHISM_STYLES.base
+                          } border-white/30 text-white placeholder:text-white/50 ${
+                            errors.subject ? "border-red-500" : ""
                           }`}
                           placeholder="What can we help you with?"
                         />
                         {errors.subject && (
-                          <p className="text-red-400 text-sm mt-1">{errors.subject}</p>
+                          <p className="text-red-400 text-sm mt-1">
+                            {errors.subject}
+                          </p>
                         )}
                       </div>
 
                       <div>
-                        <label htmlFor="message" className="block text-white/80 text-sm font-medium mb-2">
+                        <label
+                          htmlFor="message"
+                          className="block text-white/80 text-sm font-medium mb-2"
+                        >
                           Message *
                         </label>
                         <Textarea
                           id="message"
                           value={formData.message}
-                          onChange={(e) => handleInputChange('message', e.target.value)}
-                          className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50 min-h-[120px] ${
-                            errors.message ? 'border-red-500' : ''
+                          onChange={(e) =>
+                            handleInputChange("message", e.target.value)
+                          }
+                          className={`${
+                            GLASSMORPHISM_STYLES.base
+                          } border-white/30 text-white placeholder:text-white/50 min-h-[120px] ${
+                            errors.message ? "border-red-500" : ""
                           }`}
                           placeholder="Tell us more about your inquiry..."
                         />
                         {errors.message && (
-                          <p className="text-red-400 text-sm mt-1">{errors.message}</p>
+                          <p className="text-red-400 text-sm mt-1">
+                            {errors.message}
+                          </p>
                         )}
                       </div>
 
@@ -313,35 +395,49 @@ export default function ContactPage() {
                     whileHover={{ scale: 1.02 }}
                     className={`p-6 rounded-2xl ${GLASSMORPHISM_STYLES.base} ${GLASSMORPHISM_STYLES.hover} border-white/20 transition-all duration-300`}
                   >
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${NEON_GRADIENTS.primary} p-[2px] mb-4`}>
+                    <div
+                      className={`w-12 h-12 rounded-xl bg-gradient-to-r ${NEON_GRADIENTS.primary} p-[2px] mb-4`}
+                    >
                       <div className="w-full h-full rounded-xl bg-black/50 flex items-center justify-center">
                         <info.icon className="w-6 h-6 text-white" />
                       </div>
                     </div>
-                    <h3 className="text-lg font-semibold text-white mb-2">{info.title}</h3>
-                    <p className="text-white/80 whitespace-pre-line">{info.content}</p>
+                    <h3 className="text-lg font-semibold text-white mb-2">
+                      {info.title}
+                    </h3>
+                    <p className="text-white/80 whitespace-pre-line">
+                      {info.content}
+                    </p>
                   </motion.div>
                 ))}
               </div>
 
               {/* Google Maps Embed */}
-              <Card className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl overflow-hidden`}>
+              <Card
+                className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl overflow-hidden`}
+              >
                 <CardHeader>
                   <CardTitle className="text-white">Our Location</CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <div className="aspect-video bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                    <div className="text-center">
-                      <MapPin className="w-12 h-12 text-white/60 mx-auto mb-2" />
-                      <p className="text-white/60">Interactive Map</p>
-                      <p className="text-white/40 text-sm">Google Maps integration would be embedded here</p>
-                    </div>
+                  <div className="aspect-video w-full h-full">
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7361.780050480036!2d88.37632457533482!3d22.69513752846797!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f89c6df041e831%3A0x6e3fc1531d1cb33!2sGuru%20Nanak%20Institute%20of%20Technology!5e0!3m2!1sen!2sin!4v1752669698325!5m2!1sen!2sin"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    ></iframe>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Social Media Links */}
-              <Card className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl`}>
+              <Card
+                className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl`}
+              >
                 <CardHeader>
                   <CardTitle className="text-white">Follow Us</CardTitle>
                 </CardHeader>
