@@ -1,21 +1,24 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Globe, Menu, X, Leaf } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { SUPPORTED_LANGUAGES, GLASSMORPHISM_STYLES } from '@/lib/constants';
-import { translations } from '@/lib/translations';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Globe, Menu, X, Leaf } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { SUPPORTED_LANGUAGES, GLASSMORPHISM_STYLES } from "@/lib/constants";
+import { translations } from "@/lib/translations";
 
 interface NavigationProps {
   currentLanguage: string;
   onLanguageChange: (lang: string) => void;
 }
 
-export function Navigation({ currentLanguage, onLanguageChange }: NavigationProps) {
+export function Navigation({
+  currentLanguage,
+  onLanguageChange,
+}: NavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
-  
+
   const t = translations[currentLanguage as keyof typeof translations];
 
   return (
@@ -34,23 +37,34 @@ export function Navigation({ currentLanguage, onLanguageChange }: NavigationProp
             <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-emerald-500 rounded-lg flex items-center justify-center">
               <Leaf className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-white">
-              Apple Disease AI
-            </span>
+            <a href="/">
+              <span className="text-xl font-bold text-white">
+                Apple Disease AI
+              </span>
+            </a>
           </motion.div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
-            <a href="#" className="text-white/80 hover:text-white transition-colors">
+            <a
+              href="/"
+              className="text-white/80 hover:text-white transition-colors"
+            >
               {t.navigation.home}
             </a>
-            <a href="#" className="text-white/80 hover:text-white transition-colors">
+            <a
+              href="/about"
+              className="text-white/80 hover:text-white transition-colors"
+            >
               {t.navigation.about}
             </a>
-            <a href="#" className="text-white/80 hover:text-white transition-colors">
+            <a
+              href="/contact"
+              className="text-white/80 hover:text-white transition-colors"
+            >
               {t.navigation.contact}
             </a>
-            
+
             {/* Language Selector */}
             <div className="relative">
               <Button
@@ -60,9 +74,13 @@ export function Navigation({ currentLanguage, onLanguageChange }: NavigationProp
                 className={`${GLASSMORPHISM_STYLES.base} ${GLASSMORPHISM_STYLES.hover} text-white`}
               >
                 <Globe className="w-4 h-4 mr-2" />
-                {SUPPORTED_LANGUAGES.find(lang => lang.code === currentLanguage)?.flag}
+                {
+                  SUPPORTED_LANGUAGES.find(
+                    (lang) => lang.code === currentLanguage
+                  )?.flag
+                }
               </Button>
-              
+
               {showLanguageMenu && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
@@ -78,7 +96,7 @@ export function Navigation({ currentLanguage, onLanguageChange }: NavigationProp
                         setShowLanguageMenu(false);
                       }}
                       className={`w-full px-4 py-2 text-left text-white hover:bg-white/20 first:rounded-t-2xl last:rounded-b-2xl transition-colors ${
-                        currentLanguage === lang.code ? 'bg-white/20' : ''
+                        currentLanguage === lang.code ? "bg-white/20" : ""
                       }`}
                     >
                       <span className="mr-2">{lang.flag}</span>
@@ -97,7 +115,11 @@ export function Navigation({ currentLanguage, onLanguageChange }: NavigationProp
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden text-white"
           >
-            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {isMenuOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
           </Button>
         </div>
 
@@ -105,22 +127,33 @@ export function Navigation({ currentLanguage, onLanguageChange }: NavigationProp
         {isMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden mt-4 space-y-4"
           >
-            <a href="#" className="block text-white/80 hover:text-white transition-colors">
+            <a
+              href="/"
+              className="block text-white/80 hover:text-white transition-colors"
+            >
               {t.navigation.home}
             </a>
-            <a href="#" className="block text-white/80 hover:text-white transition-colors">
+            <a
+              href="/about"
+              className="block text-white/80 hover:text-white transition-colors"
+            >
               {t.navigation.about}
             </a>
-            <a href="#" className="block text-white/80 hover:text-white transition-colors">
+            <a
+              href="/contact"
+              className="block text-white/80 hover:text-white transition-colors"
+            >
               {t.navigation.contact}
             </a>
-            
+
             <div className="border-t border-white/20 pt-4">
-              <p className="text-white/60 text-sm mb-2">{t.navigation.language}</p>
+              <p className="text-white/60 text-sm mb-2">
+                {t.navigation.language}
+              </p>
               <div className="space-y-2">
                 {SUPPORTED_LANGUAGES.map((lang) => (
                   <button
@@ -130,7 +163,9 @@ export function Navigation({ currentLanguage, onLanguageChange }: NavigationProp
                       setIsMenuOpen(false);
                     }}
                     className={`block w-full text-left px-3 py-2 rounded-lg text-white transition-colors ${
-                      currentLanguage === lang.code ? 'bg-white/20' : 'hover:bg-white/10'
+                      currentLanguage === lang.code
+                        ? "bg-white/20"
+                        : "hover:bg-white/10"
                     }`}
                   >
                     <span className="mr-2">{lang.flag}</span>
