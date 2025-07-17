@@ -22,9 +22,10 @@ import { Navigation } from "@/components/Navigation";
 import { GLASSMORPHISM_STYLES, NEON_GRADIENTS } from "@/lib/constants";
 import SplitText from "@/components/animations/SplitText";
 import ShinyText from "@/components/animations/ShinyText";
+import { translations } from "@/lib/translations";
 
 export default function ContactPage() {
-  const [currentLanguage, setCurrentLanguage] = useState("en");
+  const [currentLanguage, setCurrentLanguage] = useState<"en" | "hi">("en");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -33,6 +34,10 @@ export default function ContactPage() {
     subject: "",
     message: "",
   });
+
+  const t = translations[currentLanguage].contact;
+  const tForm = t.form;
+  const tInfo = t.info;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -70,25 +75,23 @@ export default function ContactPage() {
   const contactInfo = [
     {
       icon: MapPin,
-      title: "Address",
-      content:
-        "157/F, Nilgunj Rd, Sahid Colony, Panihati, Khardaha, West Bengal 700114",
+      title: tInfo.locationTitle,
+      content: tInfo.locationContent,
     },
     {
       icon: Phone,
-      title: "Phone",
-      content: "9432012681 / 9073683911 / 9073322523",
+      title: tInfo.phoneTitle,
+      content: tInfo.phoneContent,
     },
     {
       icon: Mail,
-      title: "Email",
-      content: "contact@applediseaseai.com",
+      title: tInfo.emailTitle,
+      content: tInfo.emailContent,
     },
     {
       icon: Clock,
-      title: "Business Hours",
-      content:
-        "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed",
+      title: tInfo.hoursTitle,
+      content: tInfo.hoursContent,
     },
   ];
 
@@ -97,22 +100,17 @@ export default function ContactPage() {
       icon: Facebook,
       href: "https://www.facebook.com/share/1BEZieAfFz/?mibextid=qi2Omg",
     },
-    {
-      icon: Twitter,
-      href: "#",
-    },
+    { icon: Twitter, href: "#" },
     {
       icon: Linkedin,
-      href: "https://www.linkedin.com/in/guru-nanak-institute-of-technology-9b0ab9159?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+      href: "https://www.linkedin.com/in/guru-nanak-institute-of-technology-9b0ab9159",
     },
-    {
-      icon: Instagram,
-      href: "https://www.instagram.com/gurunanakinstitute?igsh=ZWZvdnhna2Ftc29z",
-    },
+    { icon: Instagram, href: "https://www.instagram.com/gurunanakinstitute" },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800 relative overflow-hidden">
+      {/* Background Blur Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-72 h-72 bg-purple-500/30 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" />
@@ -134,7 +132,7 @@ export default function ContactPage() {
           >
             <div className="mb-6 text-center">
               <SplitText
-                text="Talk to Your AI Crop Doctor Now 🩺"
+                text={t.heading}
                 className="text-4xl md:text-5xl font-extrabold text-white"
                 delay={80}
                 duration={0.6}
@@ -144,10 +142,9 @@ export default function ContactPage() {
                 to={{ opacity: 1, y: 0 }}
               />
             </div>
-
             <div className="text-center px-4">
               <ShinyText
-                text="Reach out to protect your crops with early detection, fast diagnosis, and expert AI guidance."
+                text={t.description}
                 speed={4}
                 className="text-lg md:text-xl max-w-2xl mx-auto text-white/80"
               />
@@ -155,7 +152,7 @@ export default function ContactPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            {/* Contact Form */}
+            {/* Form */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -167,7 +164,7 @@ export default function ContactPage() {
               >
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl font-bold text-white">
-                    Send us a Message
+                    {tForm.heading}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -175,16 +172,14 @@ export default function ContactPage() {
                     <div className="text-center py-8">
                       <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4" />
                       <h3 className="text-xl font-semibold text-white mb-2">
-                        Message Sent Successfully!
+                        {tForm.successTitle}
                       </h3>
-                      <p className="text-white/80">
-                        Thank you for contacting us. We'll get back to you soon.
-                      </p>
+                      <p className="text-white/80">{tForm.successSubtitle}</p>
                       <Button
                         onClick={() => setIsSubmitted(false)}
                         className={`mt-4 bg-gradient-to-r ${NEON_GRADIENTS.primary} text-white`}
                       >
-                        Send Another Message
+                        {tForm.sendAnother}
                       </Button>
                     </div>
                   ) : (
@@ -192,33 +187,35 @@ export default function ContactPage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block mb-1 text-white text-sm">
-                            Full Name <span className="text-white">*</span>
+                            {tForm.nameLabel}{" "}
+                            <span className="text-white">*</span>
                           </label>
                           <Input
                             name="fullName"
                             value={formData.fullName}
                             onChange={handleChange}
                             required
-                            placeholder="Your full name"
+                            placeholder={tForm.namePlaceholder}
                             className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50`}
                           />
                         </div>
                         <div>
                           <label className="block mb-1 text-white text-sm">
-                            Phone Number
+                            {tForm.phoneLabel}
                           </label>
                           <Input
                             name="phone"
                             value={formData.phone}
                             onChange={handleChange}
-                            placeholder="(555) 123-4567"
+                            placeholder={tForm.phonePlaceholder}
                             className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50`}
                           />
                         </div>
                       </div>
                       <div>
                         <label className="block mb-1 text-white text-sm">
-                          Email <span className="text-white">*</span>
+                          {tForm.emailLabel}{" "}
+                          <span className="text-white">*</span>
                         </label>
                         <Input
                           name="email"
@@ -226,33 +223,35 @@ export default function ContactPage() {
                           value={formData.email}
                           onChange={handleChange}
                           required
-                          placeholder="you@example.com"
+                          placeholder={tForm.emailPlaceholder}
                           className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50`}
                         />
                       </div>
                       <div>
                         <label className="block mb-1 text-white text-sm">
-                          Subject <span className="text-white">*</span>
+                          {tForm.subjectLabel}{" "}
+                          <span className="text-white">*</span>
                         </label>
                         <Input
                           name="subject"
                           value={formData.subject}
                           onChange={handleChange}
                           required
-                          placeholder="Subject"
+                          placeholder={tForm.subjectPlaceholder}
                           className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50`}
                         />
                       </div>
                       <div>
                         <label className="block mb-1 text-white text-sm">
-                          Message <span className="text-white">*</span>
+                          {tForm.messageLabel}{" "}
+                          <span className="text-white">*</span>
                         </label>
                         <Textarea
                           name="message"
                           value={formData.message}
                           onChange={handleChange}
                           required
-                          placeholder="Write your message here..."
+                          placeholder={tForm.messagePlaceholder}
                           className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50 min-h-[120px]`}
                         />
                       </div>
@@ -261,7 +260,7 @@ export default function ContactPage() {
                         className={`w-full bg-gradient-to-r ${NEON_GRADIENTS.primary} text-white py-3 rounded-xl`}
                       >
                         <Send className="w-4 h-4 mr-2" />
-                        Send Message
+                        {tForm.submitButton}
                       </Button>
                     </form>
                   )}
@@ -269,7 +268,7 @@ export default function ContactPage() {
               </Card>
             </motion.div>
 
-            {/* Contact Info Cards */}
+            {/* Contact Info */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -302,14 +301,14 @@ export default function ContactPage() {
             </motion.div>
           </div>
 
-          {/* Map and Socials */}
+          {/* Map & Social */}
           <div className="mt-10 space-y-6">
             <Card
               className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl overflow-hidden max-w-4xl mx-auto`}
             >
               <CardHeader className="text-center">
                 <CardTitle className="text-white text-xl">
-                  Our Location
+                  {t.location}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
@@ -332,10 +331,9 @@ export default function ContactPage() {
             >
               <CardHeader className="pb-2">
                 <CardTitle className="text-white text-center text-xl font-semibold">
-                  Grow with Us Online 🌱
+                  {t.social}
                 </CardTitle>
               </CardHeader>
-
               <CardContent className="flex justify-center gap-6 pt-2 pb-6">
                 {socialLinks.map((social, index) => (
                   <motion.a
