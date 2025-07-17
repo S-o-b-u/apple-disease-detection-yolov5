@@ -108,8 +108,7 @@ export const translations = {
         emailTitle: "Email",
         emailContent: "contact@applediseaseai.com",
         hoursTitle: "Business Hours",
-        hoursContent:
-          "Mon - Fri: 9 AM – 6 PM\nSat: 10 AM – 4 PM\nSun: Closed",
+        hoursContent: "Mon - Fri: 9 AM – 6 PM\nSat: 10 AM – 4 PM\nSun: Closed",
       },
     },
   },
@@ -188,8 +187,7 @@ export const translations = {
         emailTitle: "ईमेल",
         emailContent: "contact@applediseaseai.com",
         hoursTitle: "कारोबार का समय",
-        hoursContent:
-          "सोम - शुक्र: 9 बजे – 6 बजे\nशनिवार: 10 बजे – 4 बजे\nरविवार: बंद",
+        hoursContent: "सोम - शुक्र: 9 बजे – 6 बजे\nशनिवार: 10 बजे – 4 बजे\nरविवार: बंद",
       },
     },
   },
