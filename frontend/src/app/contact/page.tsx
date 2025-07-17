@@ -96,22 +96,18 @@ export default function ContactPage() {
     {
       icon: Facebook,
       href: "https://www.facebook.com/share/1BEZieAfFz/?mibextid=qi2Omg",
-      label: "Facebook",
     },
     {
       icon: Twitter,
       href: "#",
-      label: "Twitter",
     },
     {
       icon: Linkedin,
       href: "https://www.linkedin.com/in/guru-nanak-institute-of-technology-9b0ab9159?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
-      label: "LinkedIn",
     },
     {
       icon: Instagram,
       href: "https://www.instagram.com/gurunanakinstitute?igsh=ZWZvdnhna2Ftc29z",
-      label: "Instagram",
     },
   ];
 
@@ -136,10 +132,10 @@ export default function ContactPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <div className="mb-6">
+            <div className="mb-6 text-center">
               <SplitText
-                text="Contact Us"
-                className="text-5xl md:text-6xl font-extrabold text-white"
+                text="Talk to Your AI Crop Doctor Now 🩺"
+                className="text-4xl md:text-5xl font-extrabold text-white"
                 delay={80}
                 duration={0.6}
                 ease="power3.out"
@@ -148,24 +144,28 @@ export default function ContactPage() {
                 to={{ opacity: 1, y: 0 }}
               />
             </div>
-            <ShinyText
-              text="Get in touch with our team of agricultural AI experts. We're here to help you protect your crops and maximize your harvest."
-              speed={4}
-              className="text-xl max-w-2xl mx-auto text-center"
-            />
+
+            <div className="text-center px-4">
+              <ShinyText
+                text="Reach out to protect your crops with early detection, fast diagnosis, and expert AI guidance."
+                speed={4}
+                className="text-lg md:text-xl max-w-2xl mx-auto text-white/80"
+              />
+            </div>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             {/* Contact Form */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
+              className="lg:col-span-1"
             >
               <Card
                 className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl`}
               >
-                <CardHeader>
+                <CardHeader className="text-center">
                   <CardTitle className="text-2xl font-bold text-white">
                     Send us a Message
                   </CardTitle>
@@ -216,7 +216,6 @@ export default function ContactPage() {
                           />
                         </div>
                       </div>
-
                       <div>
                         <label className="block mb-1 text-white text-sm">
                           Email <span className="text-white">*</span>
@@ -231,7 +230,6 @@ export default function ContactPage() {
                           className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50`}
                         />
                       </div>
-
                       <div>
                         <label className="block mb-1 text-white text-sm">
                           Subject <span className="text-white">*</span>
@@ -245,7 +243,6 @@ export default function ContactPage() {
                           className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50`}
                         />
                       </div>
-
                       <div>
                         <label className="block mb-1 text-white text-sm">
                           Message <span className="text-white">*</span>
@@ -259,7 +256,6 @@ export default function ContactPage() {
                           className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50 min-h-[120px]`}
                         />
                       </div>
-
                       <Button
                         type="submit"
                         className={`w-full bg-gradient-to-r ${NEON_GRADIENTS.primary} text-white py-3 rounded-xl`}
@@ -273,87 +269,91 @@ export default function ContactPage() {
               </Card>
             </motion.div>
 
-            {/* Right Column */}
+            {/* Contact Info Cards */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="space-y-8"
+              className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6"
             >
-              {/* ✅ Contact Info Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {contactInfo.map((info, index) => (
-                  <motion.div
-                    key={index}
-                    whileHover={{ scale: 1.02 }}
-                    className={`p-6 rounded-2xl ${GLASSMORPHISM_STYLES.base} border-white/20`}
+              {contactInfo.map((info, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ scale: 1.02 }}
+                  className={`p-6 flex items-start gap-4 rounded-2xl ${GLASSMORPHISM_STYLES.base} border-white/20 h-full`}
+                >
+                  <div
+                    className={`w-12 h-12 rounded-xl bg-gradient-to-r ${NEON_GRADIENTS.primary} p-[2px]`}
                   >
-                    <div
-                      className={`w-12 h-12 rounded-xl bg-gradient-to-r ${NEON_GRADIENTS.primary} p-[2px] mb-4`}
-                    >
-                      <div className="w-full h-full rounded-xl bg-black/50 flex items-center justify-center">
-                        <info.icon className="w-6 h-6 text-white" />
-                      </div>
+                    <div className="w-full h-full rounded-xl bg-black/50 flex items-center justify-center">
+                      <info.icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white mb-2">
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-1">
                       {info.title}
                     </h3>
-                    <p className="text-white/80 whitespace-pre-line">{info.content}</p>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Google Map */}
-              <Card
-                className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl overflow-hidden`}
-              >
-                <CardHeader>
-                  <CardTitle className="text-white">Our Location</CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="aspect-video w-full h-full">
-                    <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7361.780050480036!2d88.37632457533482!3d22.69513752846797!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f89c6df041e831%3A0x6e3fc1531d1cb33!2sGuru%20Nanak%20Institute%20of%20Technology!5e0!3m2!1sen!2sin!4v1752669698325!5m2!1sen!2sin"
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0 }}
-                      allowFullScreen
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                    ></iframe>
+                    <p className="text-white/80 whitespace-pre-line">
+                      {info.content}
+                    </p>
                   </div>
-                </CardContent>
-              </Card>
-
-              {/* Social Links */}
-              <Card
-                className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl`}
-              >
-                <CardHeader>
-                  <CardTitle className="text-white">Follow Us</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex space-x-4">
-                    {socialLinks.map((social, index) => (
-                      <motion.a
-                        key={index}
-                        href={social.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`w-12 h-12 rounded-xl bg-gradient-to-r ${NEON_GRADIENTS.primary} p-[2px]`}
-                        aria-label={social.label}
-                      >
-                        <div className="w-full h-full rounded-xl bg-black/50 flex items-center justify-center hover:bg-black/30">
-                          <social.icon className="w-5 h-5 text-white" />
-                        </div>
-                      </motion.a>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                </motion.div>
+              ))}
             </motion.div>
+          </div>
+
+          {/* Map and Socials */}
+          <div className="mt-10 space-y-6">
+            <Card
+              className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl overflow-hidden max-w-4xl mx-auto`}
+            >
+              <CardHeader className="text-center">
+                <CardTitle className="text-white text-xl">
+                  Our Location
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="aspect-video w-full h-[280px]">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3683.086268781775!2d88.3790179745803!3d22.61029793279586!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a02764c40a1cbe7%3A0x6e3fc1531d1cb33!2sGuru%20Nanak%20Institute%20of%20Technology!5e0!3m2!1sen!2sin!4v1752687634134!5m2!1sen!2sin"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card
+              className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl max-w-4xl mx-auto`}
+            >
+              <CardHeader className="pb-2">
+                <CardTitle className="text-white text-center text-xl font-semibold">
+                  Grow with Us Online 🌱
+                </CardTitle>
+              </CardHeader>
+
+              <CardContent className="flex justify-center gap-6 pt-2 pb-6">
+                {socialLinks.map((social, index) => (
+                  <motion.a
+                    key={index}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`w-12 h-12 rounded-xl bg-gradient-to-r ${NEON_GRADIENTS.primary} p-[2px]`}
+                  >
+                    <div className="w-full h-full rounded-xl bg-black/50 flex items-center justify-center">
+                      <social.icon className="w-5 h-5 text-white" />
+                    </div>
+                  </motion.a>
+                ))}
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>
