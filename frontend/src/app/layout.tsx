@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { SixthSenseFooter } from '@/components/ui/Footer';
+import DarkVeil from '@/components/DarkVeil';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -41,10 +43,14 @@ export default function RootLayout({
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body className={`${inter.className} min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800 antialiased`}>
+      <body className={`${inter.className} min-h-screen antialiased`}>
+        <div style={{ width: '100%', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: -1 }}>
+          <DarkVeil />
+        </div>
         <ErrorBoundary>
-          <main className="flex flex-col min-h-screen">
+          <main className="flex flex-col min-h-screen relative">
             {children}
+            <SixthSenseFooter />
           </main>
           <Toaster />
         </ErrorBoundary>

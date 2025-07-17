@@ -123,20 +123,14 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800 relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-72 h-72 bg-purple-500/30 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-500/20 rounded-full blur-3xl animate-pulse" />
-      </div>
+    <div className="min-h-screen relative overflow-hidden">
 
       <Navigation 
         currentLanguage={currentLanguage} 
         onLanguageChange={setCurrentLanguage} 
       />
 
-      <main className="relative z-10 pt-24 pb-16">
+      <main className="relative mt-5 z-10 pt-24 pb-16">
         <div className="container mx-auto px-4">
           {/* Hero Section */}
           <motion.div

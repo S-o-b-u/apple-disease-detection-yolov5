@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Globe, Menu, X, Leaf } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Leaf, Globe, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SUPPORTED_LANGUAGES, GLASSMORPHISM_STYLES } from "@/lib/constants";
 import { translations } from "@/lib/translations";
@@ -16,167 +16,158 @@ export function Navigation({
   currentLanguage,
   onLanguageChange,
 }: NavigationProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
-
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const t = translations[currentLanguage as keyof typeof translations];
 
   return (
     <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 ${GLASSMORPHISM_STYLES.base} border-b border-white/10`}
+      initial={{ y: -50, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="fixed top-6 inset-x-0 mx-auto w-[95%] md:w-[70%] px-6 py-3 backdrop-blur-md border border-white/10 bg-white/5 rounded-full flex items-center justify-between z-50"
     >
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center space-x-2"
-          >
-            <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-emerald-500 rounded-lg flex items-center justify-center">
-              <Leaf className="w-5 h-5 text-white" />
-            </div>
-            <a href="/">
-              <span className="text-xl font-bold text-white">
-                Apple Disease AI
-              </span>
-            </a>
-          </motion.div>
+      {/* Logo + Name */}
+      <div className="flex items-center space-x-3">
+        <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow">
+          <Leaf className="w-4 h-4 text-white" />
+        </div>
+        <a href="/">
+          <span className="text-white text-lg font-semibold tracking-wide">
+            Apple Disease AI
+          </span>
+        </a>
+      </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            <a
-              href="/"
-              className="text-white/80 hover:text-white transition-colors"
-            >
-              {t.navigation.home}
-            </a>
-            <a
-              href="/about"
-              className="text-white/80 hover:text-white transition-colors"
-            >
-              {t.navigation.about}
-            </a>
-            <a
-              href="/contact"
-              className="text-white/80 hover:text-white transition-colors"
-            >
-              {t.navigation.contact}
-            </a>
+      {/* Desktop Links */}
+      <div className="hidden md:flex items-center space-x-6">
+        <a
+          href="/"
+          className="text-white/80 hover:text-white text-sm font-medium transition-colors"
+        >
+          {t.navigation.home}
+        </a>
+        <a
+          href="/about"
+          className="text-white/80 hover:text-white text-sm font-medium transition-colors"
+        >
+          About
+        </a>
+        <a
+          href="/contact"
+          className="text-white/80 hover:text-white text-sm font-medium transition-colors"
+        >
+          Contact Us
+        </a>
 
-            {/* Language Selector */}
-            <div className="relative">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-                className={`${GLASSMORPHISM_STYLES.base} ${GLASSMORPHISM_STYLES.hover} text-white`}
-              >
-                <Globe className="w-4 h-4 mr-2" />
-                {
-                  SUPPORTED_LANGUAGES.find(
-                    (lang) => lang.code === currentLanguage
-                  )?.flag
-                }
-              </Button>
-
-              {showLanguageMenu && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className={`absolute right-0 mt-2 w-48 ${GLASSMORPHISM_STYLES.base} rounded-2xl shadow-lg`}
-                >
-                  {SUPPORTED_LANGUAGES.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => {
-                        onLanguageChange(lang.code);
-                        setShowLanguageMenu(false);
-                      }}
-                      className={`w-full px-4 py-2 text-left text-white hover:bg-white/20 first:rounded-t-2xl last:rounded-b-2xl transition-colors ${
-                        currentLanguage === lang.code ? "bg-white/20" : ""
-                      }`}
-                    >
-                      <span className="mr-2">{lang.flag}</span>
-                      {lang.name}
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </div>
-          </div>
-
-          {/* Mobile Menu Button */}
+        {/* Language Dropdown */}
+        <div className="relative">
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-white"
+            onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+            className="text-white px-2 py-1 hover:bg-white/10 transition rounded-full"
           >
-            {isMenuOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Menu className="w-5 h-5" />
-            )}
+            <Globe className="w-4 h-4 mr-1" />
+            {
+              SUPPORTED_LANGUAGES.find(
+                (lang) => lang.code === currentLanguage
+              )?.flag
+            }
           </Button>
-        </div>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
+          {showLanguageMenu && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="absolute right-0 mt-2 w-40 bg-black/80 backdrop-blur-lg text-white rounded-xl shadow-xl overflow-hidden z-50"
+            >
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => {
+                    onLanguageChange(lang.code);
+                    setShowLanguageMenu(false);
+                  }}
+                  className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 ${
+                    currentLanguage === lang.code ? "bg-white/10" : ""
+                  }`}
+                >
+                  <span className="mr-2">{lang.flag}</span>
+                  {lang.name}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile Burger */}
+      <div className="md:hidden">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="text-white"
+        >
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </Button>
+      </div>
+
+      {/* Mobile Menu Drawer */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden mt-4 space-y-4"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute top-16 right-4 w-56 bg-black/90 rounded-xl shadow-xl p-4 text-white flex flex-col space-y-3 z-50 md:hidden"
           >
             <a
               href="/"
-              className="block text-white/80 hover:text-white transition-colors"
+              className="text-sm hover:text-emerald-400 transition"
+              onClick={() => setMobileMenuOpen(false)}
             >
               {t.navigation.home}
             </a>
             <a
               href="/about"
-              className="block text-white/80 hover:text-white transition-colors"
+              className="text-sm hover:text-emerald-400 transition"
+              onClick={() => setMobileMenuOpen(false)}
             >
-              {t.navigation.about}
+              About
             </a>
             <a
               href="/contact"
-              className="block text-white/80 hover:text-white transition-colors"
+              className="text-sm hover:text-emerald-400 transition"
+              onClick={() => setMobileMenuOpen(false)}
             >
-              {t.navigation.contact}
+              Contact Us
             </a>
 
-            <div className="border-t border-white/20 pt-4">
-              <p className="text-white/60 text-sm mb-2">
-                {t.navigation.language}
-              </p>
-              <div className="space-y-2">
-                {SUPPORTED_LANGUAGES.map((lang) => (
-                  <button
-                    key={lang.code}
-                    onClick={() => {
-                      onLanguageChange(lang.code);
-                      setIsMenuOpen(false);
-                    }}
-                    className={`block w-full text-left px-3 py-2 rounded-lg text-white transition-colors ${
-                      currentLanguage === lang.code
-                        ? "bg-white/20"
-                        : "hover:bg-white/10"
-                    }`}
-                  >
-                    <span className="mr-2">{lang.flag}</span>
-                    {lang.name}
-                  </button>
-                ))}
-              </div>
+            {/* Language Selector */}
+            <div className="pt-2 border-t border-white/10">
+              <div className="text-xs mb-1 text-white/60">Language</div>
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => {
+                    onLanguageChange(lang.code);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`text-sm px-2 py-1 rounded-md w-full text-left hover:bg-white/10 ${
+                    currentLanguage === lang.code ? "bg-white/10" : ""
+                  }`}
+                >
+                  <span className="mr-2">{lang.flag}</span>
+                  {lang.name}
+                </button>
+              ))}
             </div>
           </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     </motion.nav>
   );
 }
