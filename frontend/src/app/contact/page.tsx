@@ -9,7 +9,6 @@ import {
   Clock,
   Send,
   CheckCircle,
-  AlertCircle,
   Facebook,
   Twitter,
   Linkedin,
@@ -19,92 +18,52 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Navigation } from "@/components/Navigation";
 import { GLASSMORPHISM_STYLES, NEON_GRADIENTS } from "@/lib/constants";
 import SplitText from "@/components/animations/SplitText";
 import ShinyText from "@/components/animations/ShinyText";
 
-interface FormData {
-  fullName: string;
-  email: string;
-  phone: string;
-  subject: string;
-  message: string;
-}
-
-interface FormErrors {
-  fullName?: string;
-  email?: string;
-  subject?: string;
-  message?: string;
-}
-
 export default function ContactPage() {
   const [currentLanguage, setCurrentLanguage] = useState("en");
-  const [formData, setFormData] = useState<FormData>({
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
     fullName: "",
-    email: "",
     phone: "",
+    email: "",
     subject: "",
     message: "",
   });
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full name is required";
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "Email address is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
-
-    if (!formData.subject.trim()) {
-      newErrors.subject = "Subject is required";
-    }
-
-    if (!formData.message.trim()) {
-      newErrors.message = "Message is required";
-    } else if (formData.message.length < 10) {
-      newErrors.message = "Message must be at least 10 characters long";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      const response = await fetch("https://formspree.io/f/xjkovppw", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    if (!validateForm()) return;
-
-    setIsSubmitting(true);
-
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    setFormData({
-      fullName: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: "",
-    });
-  };
-
-  const handleInputChange = (field: keyof FormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }));
+      if (response.ok) {
+        setIsSubmitted(true);
+        setFormData({
+          fullName: "",
+          phone: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred while sending your message.");
     }
   };
 
@@ -129,20 +88,31 @@ export default function ContactPage() {
       icon: Clock,
       title: "Business Hours",
       content:
-        "Monday - Friday: 9:00 AM - 6:00 PM PST\nSaturday: 10:00 AM - 4:00 PM PST\nSunday: Closed",
+        "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed",
     },
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Instagram, href: "#", label: "Instagram" },
+    {
+      icon: Facebook,
+      href: "https://www.facebook.com/share/1BEZieAfFz/?mibextid=qi2Omg",
+    },
+    {
+      icon: Twitter,
+      href: "#",
+    },
+    {
+      icon: Linkedin,
+      href: "https://www.linkedin.com/in/guru-nanak-institute-of-technology-9b0ab9159?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+    },
+    {
+      icon: Instagram,
+      href: "https://www.instagram.com/gurunanakinstitute?igsh=ZWZvdnhna2Ftc29z",
+    },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-800 relative overflow-hidden">
-      {/* Animated Background */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-72 h-72 bg-purple-500/30 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" />
@@ -156,223 +126,142 @@ export default function ContactPage() {
 
       <main className="relative z-10 pt-24 pb-16">
         <div className="container mx-auto px-4">
-          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            {/* Wrap SplitText to force full width */}
-            <div className="w-full">
+            <div className="mb-6 text-center">
               <SplitText
-                text="Contact Us"
-                className="text-5xl md:text-6xl font-extrabold text-white"
+                text="Talk to Your AI Crop Doctor Now 🩺"
+                className="text-4xl md:text-5xl font-extrabold text-white"
                 delay={80}
                 duration={0.6}
                 ease="power3.out"
                 splitType="chars"
                 from={{ opacity: 0, y: 40 }}
                 to={{ opacity: 1, y: 0 }}
-                rootMargin="-100px"
-                threshold={0.2}
               />
             </div>
 
-            {/* Push ShinyText below it */}
-            <ShinyText
-              text="Get in touch with our team of agricultural AI experts. We're here to help you protect your crops and maximize your harvest."
-              speed={4}
-              className="text-xl max-w-2xl mx-auto text-center mt-6"
-            />
+            <div className="text-center px-4">
+              <ShinyText
+                text="Reach out to protect your crops with early detection, fast diagnosis, and expert AI guidance."
+                speed={4}
+                className="text-lg md:text-xl max-w-2xl mx-auto text-white/80"
+              />
+            </div>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             {/* Contact Form */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
+              className="lg:col-span-1"
             >
               <Card
                 className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl`}
               >
-                <CardHeader>
+                <CardHeader className="text-center">
                   <CardTitle className="text-2xl font-bold text-white">
                     Send us a Message
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   {isSubmitted ? (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="text-center py-8"
-                    >
+                    <div className="text-center py-8">
                       <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4" />
                       <h3 className="text-xl font-semibold text-white mb-2">
                         Message Sent Successfully!
                       </h3>
                       <p className="text-white/80">
-                        Thank you for contacting us. We'll get back to you
-                        within 24 hours.
+                        Thank you for contacting us. We'll get back to you soon.
                       </p>
                       <Button
                         onClick={() => setIsSubmitted(false)}
-                        className={`mt-4 bg-gradient-to-r ${NEON_GRADIENTS.primary} hover:shadow-lg hover:shadow-purple-500/25 text-white font-medium rounded-xl`}
+                        className={`mt-4 bg-gradient-to-r ${NEON_GRADIENTS.primary} text-white`}
                       >
                         Send Another Message
                       </Button>
-                    </motion.div>
+                    </div>
                   ) : (
                     <form onSubmit={handleSubmit} className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <label
-                            htmlFor="fullName"
-                            className="block text-white/80 text-sm font-medium mb-2"
-                          >
-                            Full Name *
+                          <label className="block mb-1 text-white text-sm">
+                            Full Name <span className="text-white">*</span>
                           </label>
                           <Input
-                            id="fullName"
-                            type="text"
+                            name="fullName"
                             value={formData.fullName}
-                            onChange={(e) =>
-                              handleInputChange("fullName", e.target.value)
-                            }
-                            className={`${
-                              GLASSMORPHISM_STYLES.base
-                            } border-white/30 text-white placeholder:text-white/50 ${
-                              errors.fullName ? "border-red-500" : ""
-                            }`}
-                            placeholder="Enter your full name"
+                            onChange={handleChange}
+                            required
+                            placeholder="Your full name"
+                            className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50`}
                           />
-                          {errors.fullName && (
-                            <p className="text-red-400 text-sm mt-1">
-                              {errors.fullName}
-                            </p>
-                          )}
                         </div>
                         <div>
-                          <label
-                            htmlFor="phone"
-                            className="block text-white/80 text-sm font-medium mb-2"
-                          >
+                          <label className="block mb-1 text-white text-sm">
                             Phone Number
                           </label>
                           <Input
-                            id="phone"
-                            type="tel"
+                            name="phone"
                             value={formData.phone}
-                            onChange={(e) =>
-                              handleInputChange("phone", e.target.value)
-                            }
-                            className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50`}
+                            onChange={handleChange}
                             placeholder="(555) 123-4567"
+                            className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50`}
                           />
                         </div>
                       </div>
-
                       <div>
-                        <label
-                          htmlFor="email"
-                          className="block text-white/80 text-sm font-medium mb-2"
-                        >
-                          Email Address *
+                        <label className="block mb-1 text-white text-sm">
+                          Email <span className="text-white">*</span>
                         </label>
                         <Input
-                          id="email"
+                          name="email"
                           type="email"
                           value={formData.email}
-                          onChange={(e) =>
-                            handleInputChange("email", e.target.value)
-                          }
-                          className={`${
-                            GLASSMORPHISM_STYLES.base
-                          } border-white/30 text-white placeholder:text-white/50 ${
-                            errors.email ? "border-red-500" : ""
-                          }`}
-                          placeholder="your.email@example.com"
+                          onChange={handleChange}
+                          required
+                          placeholder="you@example.com"
+                          className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50`}
                         />
-                        {errors.email && (
-                          <p className="text-red-400 text-sm mt-1">
-                            {errors.email}
-                          </p>
-                        )}
                       </div>
-
                       <div>
-                        <label
-                          htmlFor="subject"
-                          className="block text-white/80 text-sm font-medium mb-2"
-                        >
-                          Subject *
+                        <label className="block mb-1 text-white text-sm">
+                          Subject <span className="text-white">*</span>
                         </label>
                         <Input
-                          id="subject"
-                          type="text"
+                          name="subject"
                           value={formData.subject}
-                          onChange={(e) =>
-                            handleInputChange("subject", e.target.value)
-                          }
-                          className={`${
-                            GLASSMORPHISM_STYLES.base
-                          } border-white/30 text-white placeholder:text-white/50 ${
-                            errors.subject ? "border-red-500" : ""
-                          }`}
-                          placeholder="What can we help you with?"
+                          onChange={handleChange}
+                          required
+                          placeholder="Subject"
+                          className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50`}
                         />
-                        {errors.subject && (
-                          <p className="text-red-400 text-sm mt-1">
-                            {errors.subject}
-                          </p>
-                        )}
                       </div>
-
                       <div>
-                        <label
-                          htmlFor="message"
-                          className="block text-white/80 text-sm font-medium mb-2"
-                        >
-                          Message *
+                        <label className="block mb-1 text-white text-sm">
+                          Message <span className="text-white">*</span>
                         </label>
                         <Textarea
-                          id="message"
+                          name="message"
                           value={formData.message}
-                          onChange={(e) =>
-                            handleInputChange("message", e.target.value)
-                          }
-                          className={`${
-                            GLASSMORPHISM_STYLES.base
-                          } border-white/30 text-white placeholder:text-white/50 min-h-[120px] ${
-                            errors.message ? "border-red-500" : ""
-                          }`}
-                          placeholder="Tell us more about your inquiry..."
+                          onChange={handleChange}
+                          required
+                          placeholder="Write your message here..."
+                          className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50 min-h-[120px]`}
                         />
-                        {errors.message && (
-                          <p className="text-red-400 text-sm mt-1">
-                            {errors.message}
-                          </p>
-                        )}
                       </div>
-
                       <Button
                         type="submit"
-                        disabled={isSubmitting}
-                        className={`w-full bg-gradient-to-r ${NEON_GRADIENTS.primary} hover:shadow-lg hover:shadow-purple-500/25 text-white font-medium py-3 rounded-xl transition-all duration-300`}
+                        className={`w-full bg-gradient-to-r ${NEON_GRADIENTS.primary} text-white py-3 rounded-xl`}
                       >
-                        {isSubmitting ? (
-                          <div className="flex items-center">
-                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
-                            Sending...
-                          </div>
-                        ) : (
-                          <div className="flex items-center">
-                            <Send className="w-4 h-4 mr-2" />
-                            Send Message
-                          </div>
-                        )}
+                        <Send className="w-4 h-4 mr-2" />
+                        Send Message
                       </Button>
                     </form>
                   )}
@@ -380,87 +269,91 @@ export default function ContactPage() {
               </Card>
             </motion.div>
 
-            {/* Contact Information */}
+            {/* Contact Info Cards */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="space-y-8"
+              className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6"
             >
-              {/* Contact Details */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {contactInfo.map((info, index) => (
-                  <motion.div
-                    key={index}
-                    whileHover={{ scale: 1.02 }}
-                    className={`p-6 rounded-2xl ${GLASSMORPHISM_STYLES.base} ${GLASSMORPHISM_STYLES.hover} border-white/20 transition-all duration-300`}
+              {contactInfo.map((info, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ scale: 1.02 }}
+                  className={`p-6 flex items-start gap-4 rounded-2xl ${GLASSMORPHISM_STYLES.base} border-white/20 h-full`}
+                >
+                  <div
+                    className={`w-12 h-12 rounded-xl bg-gradient-to-r ${NEON_GRADIENTS.primary} p-[2px]`}
                   >
-                    <div
-                      className={`w-12 h-12 rounded-xl bg-gradient-to-r ${NEON_GRADIENTS.primary} p-[2px] mb-4`}
-                    >
-                      <div className="w-full h-full rounded-xl bg-black/50 flex items-center justify-center">
-                        <info.icon className="w-6 h-6 text-white" />
-                      </div>
+                    <div className="w-full h-full rounded-xl bg-black/50 flex items-center justify-center">
+                      <info.icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white mb-2">
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-1">
                       {info.title}
                     </h3>
                     <p className="text-white/80 whitespace-pre-line">
                       {info.content}
                     </p>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Google Maps Embed */}
-              <Card
-                className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl overflow-hidden`}
-              >
-                <CardHeader>
-                  <CardTitle className="text-white">Our Location</CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="aspect-video w-full h-full">
-                    <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7361.780050480036!2d88.37632457533482!3d22.69513752846797!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f89c6df041e831%3A0x6e3fc1531d1cb33!2sGuru%20Nanak%20Institute%20of%20Technology!5e0!3m2!1sen!2sin!4v1752669698325!5m2!1sen!2sin"
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0 }}
-                      allowFullScreen
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                    ></iframe>
                   </div>
-                </CardContent>
-              </Card>
-
-              {/* Social Media Links */}
-              <Card
-                className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl`}
-              >
-                <CardHeader>
-                  <CardTitle className="text-white">Follow Us</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex space-x-4">
-                    {socialLinks.map((social, index) => (
-                      <motion.a
-                        key={index}
-                        href={social.href}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`w-12 h-12 rounded-xl bg-gradient-to-r ${NEON_GRADIENTS.primary} p-[2px] transition-all duration-300`}
-                        aria-label={social.label}
-                      >
-                        <div className="w-full h-full rounded-xl bg-black/50 flex items-center justify-center hover:bg-black/30 transition-colors">
-                          <social.icon className="w-5 h-5 text-white" />
-                        </div>
-                      </motion.a>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                </motion.div>
+              ))}
             </motion.div>
+          </div>
+
+          {/* Map and Socials */}
+          <div className="mt-10 space-y-6">
+            <Card
+              className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl overflow-hidden max-w-4xl mx-auto`}
+            >
+              <CardHeader className="text-center">
+                <CardTitle className="text-white text-xl">
+                  Our Location
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="aspect-video w-full h-[280px]">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3683.086268781775!2d88.3790179745803!3d22.61029793279586!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a02764c40a1cbe7%3A0x6e3fc1531d1cb33!2sGuru%20Nanak%20Institute%20of%20Technology!5e0!3m2!1sen!2sin!4v1752687634134!5m2!1sen!2sin"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card
+              className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl max-w-4xl mx-auto`}
+            >
+              <CardHeader className="pb-2">
+                <CardTitle className="text-white text-center text-xl font-semibold">
+                  Grow with Us Online 🌱
+                </CardTitle>
+              </CardHeader>
+
+              <CardContent className="flex justify-center gap-6 pt-2 pb-6">
+                {socialLinks.map((social, index) => (
+                  <motion.a
+                    key={index}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`w-12 h-12 rounded-xl bg-gradient-to-r ${NEON_GRADIENTS.primary} p-[2px]`}
+                  >
+                    <div className="w-full h-full rounded-xl bg-black/50 flex items-center justify-center">
+                      <social.icon className="w-5 h-5 text-white" />
+                    </div>
+                  </motion.a>
+                ))}
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>
