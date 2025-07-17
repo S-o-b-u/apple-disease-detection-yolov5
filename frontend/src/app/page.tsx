@@ -1,37 +1,35 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Navigation } from '@/components/Navigation';
-import { UploadZone } from '@/components/UploadZone';
-import { ResultsPanel } from '@/components/ResultsPanel';
-import { LoadingScreen } from '@/components/LoadingScreen';
-import { UploadedImage, DetectionResult } from '@/types';
-import { SUPPORTED_LANGUAGES } from '@/lib/constants';
-import { translations } from '@/lib/translations';
-import { detectDisease } from '@/lib/api';
-import { config } from '@/lib/config';
-import { useToast } from '@/components/ui/use-toast';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Navigation } from "@/components/Navigation";
+import { UploadZone } from "@/components/UploadZone";
+import { ResultsPanel } from "@/components/ResultsPanel";
+import { LoadingScreen } from "@/components/LoadingScreen";
+import type { UploadedImage, DetectionResult } from "@/types";
+import { SUPPORTED_LANGUAGES } from "@/lib/constants";
+import { translations, commonTranslations } from "@/lib/translations";
+import { detectDisease } from "@/lib/api";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Home() {
-  const [currentLanguage, setCurrentLanguage] = useState('en');
+  const [currentLanguage, setCurrentLanguage] = useState<"en" | "hi">("en");
   const [uploadedImage, setUploadedImage] = useState<UploadedImage | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [results, setResults] = useState<DetectionResult[]>([]);
-  const [showResults, setShowResults] = useState(false);
+  const [showResults, setShowResults] = useState<boolean>(false);
 
-  const t = translations[currentLanguage as keyof typeof translations];
+  const t = translations[currentLanguage];
+  const toastText = commonTranslations;
+  const { toast } = useToast();
 
   useEffect(() => {
-    // Set initial language based on browser preference
-    const browserLang = navigator.language.split('-')[0];
-    const supportedLang = SUPPORTED_LANGUAGES.find(lang => lang.code === browserLang);
-    if (supportedLang) {
+    const browserLang = navigator.language.split("-")[0];
+    const supportedLang = SUPPORTED_LANGUAGES.find((lang) => lang.code === browserLang);
+    if (supportedLang && (supportedLang.code === "en" || supportedLang.code === "hi")) {
       setCurrentLanguage(supportedLang.code);
     }
   }, []);
-
-  const { toast } = useToast();
 
   const handleFileUpload = async (file: File) => {
     setIsAnalyzing(true);
@@ -40,27 +38,47 @@ export default function Home() {
     const imageUrl = URL.createObjectURL(file);
     const newImage: UploadedImage = {
       file,
-      url: imageUrl
+      url: imageUrl,
     };
 
     setUploadedImage(newImage);
 
     try {
       const detectionResults = await detectDisease(file);
-      setResults(detectionResults);
-      setShowResults(true);
+      
+      if (detectionResults.length === 0) {
+        toast({
+          variant: "destructive",
+          title: toastText.error.title[currentLanguage],
+          description: "No diseases detected in the image. Please try with a different image.",
+        });
+        setShowResults(false);
+      } else {
+        setResults(detectionResults);
+        setShowResults(true);
+        toast({
+          title: toastText.success.title[currentLanguage],
+          description: toastText.success.detection[currentLanguage],
+        });
+      }
+    } catch (error: unknown) {
+      console.error("Detection failed:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      
+      const getErrorDescription = (message: string) => {
+        if (message.includes("Failed to fetch") || message.includes("NetworkError")) {
+          return toastText.error.network[currentLanguage];
+        } else if (message.includes("Invalid response format") || message.includes("Missing required fields")) {
+          return "Server returned invalid data. Please try again.";
+        } else {
+          return toastText.error.detection[currentLanguage];
+        }
+      };
+
       toast({
-        title: t.success.title[currentLanguage],
-        description: t.success.detection[currentLanguage],
-      });
-    } catch (error) {
-      console.error('Detection failed:', error);
-      toast({
-        variant: 'destructive',
-        title: t.error.title[currentLanguage],
-        description: error instanceof Error && error.message === 'Failed to fetch'
-          ? t.error.network[currentLanguage]
-          : t.error.detection[currentLanguage],
+        variant: "destructive",
+        title: toastText.error.title[currentLanguage],
+        description: getErrorDescription(errorMessage),
       });
       setResults([]);
       setShowResults(false);
@@ -86,9 +104,9 @@ export default function Home() {
       </div>
 
       {/* Navigation */}
-      <Navigation 
-        currentLanguage={currentLanguage} 
-        onLanguageChange={setCurrentLanguage} 
+      <Navigation
+        currentLanguage={currentLanguage}
+        onLanguageChange={(lang) => setCurrentLanguage(lang as "en" | "hi")}
       />
 
       {/* Main Content */}
@@ -144,20 +162,38 @@ export default function Home() {
                 >
                   {[
                     {
-                      title: currentLanguage === 'en' ? 'AI-Powered Detection' : 'एआई-संचालित पहचान',
-                      description: currentLanguage === 'en' ? 'Advanced machine learning algorithms for accurate disease identification' : 'सटीक रोग पहचान के लिए उन्नत मशीन लर्निंग एल्गोरिदम',
-                      icon: '🤖'
+                      title:
+                        currentLanguage === "en"
+                          ? "AI-Powered Detection"
+                          : "एआई-संचालित पहचान",
+                      description:
+                        currentLanguage === "en"
+                          ? "Advanced machine learning algorithms for accurate disease identification"
+                          : "सटीक रोग पहचान के लिए उन्नत मशीन लर्निंग एल्गोरिदम",
+                      icon: "🤖",
                     },
                     {
-                      title: currentLanguage === 'en' ? 'Instant Results' : 'तत्काल परिणाम',
-                      description: currentLanguage === 'en' ? 'Get detailed analysis and treatment recommendations in seconds' : 'सेकंड में विस्तृत विश्लेषण और उपचार सुझाव प्राप्त करें',
-                      icon: '⚡'
+                      title:
+                        currentLanguage === "en"
+                          ? "Instant Results"
+                          : "तत्काल परिणाम",
+                      description:
+                        currentLanguage === "en"
+                          ? "Get detailed analysis and treatment recommendations in seconds"
+                          : "सेकंड में विस्तृत विश्लेषण और उपचार सुझाव प्राप्त करें",
+                      icon: "⚡",
                     },
                     {
-                      title: currentLanguage === 'en' ? 'Expert Guidance' : 'विशेषज्ञ मार्गदर्शन',
-                      description: currentLanguage === 'en' ? 'Professional treatment plans and prevention strategies' : 'पेशेवर उपचार योजनाएं और रोकथाम रणनीतियां',
-                      icon: '🌿'
-                    }
+                      title:
+                        currentLanguage === "en"
+                          ? "Expert Guidance"
+                          : "विशेषज्ञ मार्गदर्शन",
+                      description:
+                        currentLanguage === "en"
+                          ? "Professional treatment plans and prevention strategies"
+                          : "पेशेवर उपचार योजनाएं और रोकथाम रणनीतियां",
+                      icon: "🌿",
+                    },
                   ].map((feature, index) => (
                     <motion.div
                       key={index}
@@ -165,7 +201,9 @@ export default function Home() {
                       className="p-6 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all duration-300"
                     >
                       <div className="text-4xl mb-4">{feature.icon}</div>
-                      <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
+                      <h3 className="text-xl font-semibold text-white mb-2">
+                        {feature.title}
+                      </h3>
                       <p className="text-white/60">{feature.description}</p>
                     </motion.div>
                   ))}

@@ -30,6 +30,10 @@ export class ErrorBoundary extends Component<Props, State> {
     console.error('Uncaught error:', error, errorInfo);
   }
 
+  private handleRetry = () => {
+    this.setState({ hasError: false, error: null });
+  };
+
   public render() {
     const { hasError, error } = this.state;
     const { currentLanguage = 'en' } = this.props;
@@ -46,10 +50,7 @@ export class ErrorBoundary extends Component<Props, State> {
               </AlertDescription>
             </Alert>
             <Button
-              onClick={() => {
-                this.setState({ hasError: false, error: null });
-                window.location.reload();
-              }}
+              onClick={this.handleRetry}
               className="w-full"
             >
               {t.error.retry}

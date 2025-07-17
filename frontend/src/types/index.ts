@@ -1,20 +1,23 @@
 export interface DetectionResult {
   disease: string;
   confidence: number;
-  severity: 'Low' | 'Medium' | 'High';
+  severity: string;
   coordinates: {
     x: number;
     y: number;
     width: number;
     height: number;
   };
+  imageUrl: string;     // ✅ Add this
+  reportUrl: string;    // ✅ Add this
   treatment: {
     title: string;
     description: string;
     steps: string[];
-    audioUrl?: string;
+    audioUrl: string;
   };
 }
+
 
 export interface UploadedImage {
   file: File;

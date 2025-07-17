@@ -1,36 +1,39 @@
-export const translations = {
+export const commonTranslations = {
   error: {
     title: {
       en: 'Error',
-      hi: 'त्रुटि'
+      hi: 'त्रुटि',
     },
     detection: {
       en: 'Failed to analyze image. Please try again.',
-      hi: 'छवि का विश्लेषण करने में विफल। कृपया पुनः प्रयास करें।'
+      hi: 'छवि का विश्लेषण करने में विफल। कृपया पुनः प्रयास करें।',
     },
     unknown: {
       en: 'An unexpected error occurred. Please try again.',
-      hi: 'एक अनपेक्षित त्रुटि हुई। कृपया पुनः प्रयास करें।'
+      hi: 'एक अनपेक्षित त्रुटि हुई। कृपया पुनः प्रयास करें।',
     },
     retry: {
       en: 'Try Again',
-      hi: 'पुनः प्रयास करें'
+      hi: 'पुनः प्रयास करें',
     },
     network: {
       en: 'Network error. Please check your connection.',
-      hi: 'नेटवर्क त्रुटि। कृपया अपना कनेक्शन जांचें।'
-    }
+      hi: 'नेटवर्क त्रुटि। कृपया अपना कनेक्शन जांचें।',
+    },
   },
   success: {
     title: {
       en: 'Success',
-      hi: 'सफलता'
+      hi: 'सफलता',
     },
     detection: {
       en: 'Image analysis completed successfully.',
-      hi: 'छवि विश्लेषण सफलतापूर्वक पूरा हुआ।'
-    }
+      hi: 'छवि विश्लेषण सफलतापूर्वक पूरा हुआ।',
+    },
   },
+} as const;
+
+export const translations = {
   en: {
     title: 'Apple Leaf Disease Detection',
     subtitle: 'AI-powered disease detection for healthier crops',
@@ -48,8 +51,8 @@ export const translations = {
         emptyFile: 'The selected file is empty',
         fileNameTooLong: 'File name is too long (max 255 characters)',
         multipleFiles: 'Please upload only one file at a time',
-        generalError: 'An error occurred while processing the file'
-      }
+        generalError: 'An error occurred while processing the file',
+      },
     },
     results: {
       title: 'Detection Results',
@@ -60,19 +63,19 @@ export const translations = {
       playAudio: 'Play Instructions',
       newAnalysis: 'New Analysis',
       audioError: 'Failed to play audio instructions. Please try again.',
-      audioLoading: 'Loading audio...'
+      audioLoading: 'Loading audio...',
     },
     treatment: {
       steps: 'Treatment Steps',
       prevention: 'Prevention Tips',
-      monitoring: 'Monitoring'
+      monitoring: 'Monitoring',
     },
     navigation: {
       home: 'Home',
       about: 'About',
       contact: 'Contact',
-      language: 'Language'
-    }
+      language: 'Language',
+    },
   },
   hi: {
     title: 'सेब के पत्ते की बीमारी की पहचान',
@@ -91,8 +94,8 @@ export const translations = {
         emptyFile: 'चयनित फ़ाइल खाली है',
         fileNameTooLong: 'फ़ाइल का नाम बहुत लंबा है (अधिकतम 255 अक्षर)',
         multipleFiles: 'कृपया एक समय में एक ही फ़ाइल अपलोड करें',
-        generalError: 'फ़ाइल को प्रोसेस करते समय एक त्रुटि हुई'
-      }
+        generalError: 'फ़ाइल को प्रोसेस करते समय एक त्रुटि हुई',
+      },
     },
     results: {
       title: 'पहचान परिणाम',
@@ -103,18 +106,20 @@ export const translations = {
       playAudio: 'निर्देश सुनें',
       newAnalysis: 'नया विश्लेषण',
       audioError: 'ऑडियो निर्देश चलाने में विफल। कृपया पुनः प्रयास करें।',
-      audioLoading: 'ऑडियो लोड हो रहा है...'
+      audioLoading: 'ऑडियो लोड हो रहा है...',
     },
     treatment: {
       steps: 'उपचार के चरण',
       prevention: 'रोकथाम के सुझाव',
-      monitoring: 'निगरानी'
+      monitoring: 'निगरानी',
     },
     navigation: {
       home: 'मुख्य पृष्ठ',
       about: 'के बारे में',
       contact: 'संपर्क',
-      language: 'भाषा'
-    }
-  }
-};
+      language: 'भाषा',
+    },
+  },
+} as const;
+
+export type LanguageCode = keyof typeof translations;
