@@ -1,175 +1,121 @@
 from fpdf import FPDF
-from PIL import Image
 import uuid
 import os
 
+# ✅ Unicode-safe text converter
 def safe(text):
     return text.replace("–", "-").replace("—", "-").replace("“", '"').replace("”", '"')
 
+# ✅ Disease info dictionary
 DISEASE_DETAILS = {
     "Rust": {
-        "description": "Apple rust is a fungal disease that produces rust-colored lesions on leaves, weakening the plant and potentially reducing fruit quality.",
+        "description": "Apple rust is a fungal disease that causes orange or rust-colored spots on leaves, leading to premature leaf drop and reduced fruit yield.",
         "fungicides": ["Myclobutanil", "Propiconazole"],
         "steps": [
-            "Carefully remove and discard all visibly infected leaves to reduce fungal spread.",
-            "Spray a fungicide like Myclobutanil as early as signs of infection appear to control the disease.",
-            "Continue spraying every 10–14 days during humid or rainy seasons for sustained protection.",
-            "Avoid planting junipers nearby, as they serve as alternate hosts for the rust pathogen."
+            "Identify and remove infected leaves from the tree.",
+            "Apply a fungicide like myclobutanil at the early stage of the infection.",
+            "Repeat the spray every 10-14 days during the growing season.",
+            "Avoid planting juniper species near apple trees, as they are alternate hosts for rust."
         ],
         "prevention": [
-            "Plant rust-resistant apple cultivars whenever possible.",
-            "Prune branches regularly to improve airflow and reduce moisture accumulation.",
-            "Avoid overhead watering which keeps leaves wet and favors fungal growth."
+            "Plant rust-resistant apple varieties.",
+            "Maintain good air circulation by pruning.",
+            "Avoid overhead irrigation."
         ]
     },
     "Scab": {
-        "description": "Apple scab appears as dark, velvety lesions on leaves and fruit, often leading to premature leaf drop and poor fruit development.",
+        "description": "Apple scab causes dark, scabby lesions on leaves and fruit. It reduces yield and makes apples unmarketable.",
         "fungicides": ["Captan", "Mancozeb"],
         "steps": [
-            "Clean up and dispose of fallen leaves and debris from the orchard floor to minimize infection sources.",
-            "Begin fungicide treatment (e.g., Captan or Mancozeb) during the green tip stage for best results.",
-            "Reapply fungicide every 7 to 10 days, especially in wet conditions, to protect new growth.",
-            "Thin dense tree canopies to increase sunlight penetration and reduce humidity."
+            "Remove and destroy fallen infected leaves and fruit.",
+            "Apply fungicides at the green tip stage.",
+            "Continue spraying at 7-10 day intervals.",
+            "Ensure proper pruning to allow sunlight penetration."
         ],
         "prevention": [
-            "Opt for scab-resistant varieties to lower risk of infection.",
-            "Provide adequate spacing between trees to improve air circulation.",
-            "Avoid composting infected leaves near orchard areas."
+            "Plant scab-resistant apple varieties.",
+            "Use proper spacing between trees for airflow.",
+            "Rake and compost leaves far from the orchard."
         ]
     },
     "Healthy": {
-        "description": "No signs of disease were detected. The leaf appears healthy, suggesting good orchard maintenance and environmental conditions.",
+        "description": "No disease detected. This is a healthy apple leaf.",
         "fungicides": [],
         "steps": [],
         "prevention": [
-            "Regularly inspect plants for early symptoms of disease or stress.",
-            "Keep the orchard clean and well-maintained to discourage pests and pathogens.",
-            "Apply fungicides only when environmental risk factors are high."
+            "Continue regular monitoring of leaves.",
+            "Maintain good orchard hygiene.",
+            "Apply preventive sprays only if needed."
         ]
     }
 }
 
-def generate_report(disease, treatment, original_filename, detected_filename, confidence=None):
-    pdf = FPDF(orientation='L', unit='mm', format='A4')
+def generate_report(disease, treatment, image_path=None):
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
-    pdf.set_auto_page_break(auto=False)
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(0, 10, safe("Apple Leaf Disease Diagnosis Report"), ln=True, align='C')
 
-    # Background
-    pdf.set_fill_color(245, 240, 230)
-    pdf.rect(0, 0, 297, 210, 'F')
+    pdf.ln(5)
+    pdf.set_font("Arial", '', 12)
 
-    # Border
-    pdf.set_draw_color(92, 68, 56)
-    pdf.set_line_width(1)
-    pdf.rect(5, 5, 287, 200)
-
-    # Logos
-    try:
-        pdf.image("assets/yolov5_logo.png", x=10, y=8, w=20)
-    except:
-        pdf.set_xy(10, 8)
-        pdf.set_font("Arial", 'B', 11)
-        pdf.cell(25, 10, "[YOLOv5]")
-
-    try:
-        pdf.image("assets/gnit_logo.png", x=265, y=8, w=20)
-    except:
-        pdf.set_xy(260, 8)
-        pdf.set_font("Arial", 'B', 11)
-        pdf.cell(25, 10, "[GNIT]")
-
-    # Title
-    pdf.set_font("Arial", 'B', 22)
-    pdf.set_text_color(0)
-    pdf.cell(0, 16, "AI-Powered Crop Disease Diagnosis", ln=True, align='C')
-
-    pdf.set_font("Arial", '', 13)
-    pdf.set_text_color(80)
-    pdf.cell(0, 8, "Ensuring crop health through early and accurate disease identification.", ln=True, align='C')
-    pdf.ln(2)
-
-    # Left Section
-    x_left = 10
-    y_start = 38
-    pdf.set_xy(x_left, y_start)
+    # Disease Detected
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 10, safe(f"Disease Detected: {disease}"), ln=True)
+    pdf.set_font("Arial", '', 12)
 
     details = DISEASE_DETAILS.get(disease, {})
+    pdf.ln(3)
 
-    pdf.set_font("Arial", 'B', 12)
-    pdf.set_text_color(0)
-    pdf.cell(140, 6, f"Disease Detected: {disease}", ln=True)
+    # Description
+    description = details.get("description", "")
+    if description:
+        pdf.multi_cell(0, 8, safe(description))
+        pdf.ln(2)
 
-    if confidence:
+    # Fungicides
+    fungicides = details.get("fungicides", [])
+    if fungicides:
+        pdf.set_font("Arial", 'B', 12)
+        pdf.cell(0, 10, safe("Recommended Fungicides:"), ln=True)
         pdf.set_font("Arial", '', 12)
-        pdf.cell(140, 7, f"Confidence: {confidence}%", ln=True)
+        for f in fungicides:
+            pdf.cell(0, 8, safe(f"- {f}"), ln=True)
+        pdf.ln(2)
 
-    if treatment:
+    # Treatment Steps
+    steps = details.get("steps", [])
+    if steps:
+        pdf.set_font("Arial", 'B', 12)
+        pdf.cell(0, 10, safe("Treatment Steps:"), ln=True)
         pdf.set_font("Arial", '', 12)
-        pdf.multi_cell(140, 6, f"Suggested Treatment: {safe(treatment)}")
-        pdf.ln(1)
+        for step in steps:
+            pdf.multi_cell(0, 8, safe(f"-> {step}"))
+        pdf.ln(2)
 
-    def write_section(title, items, numbered=False, max_lines=3):
-        if items:
-            pdf.set_font("Arial", 'B', 13)
-            pdf.cell(140, 7, title, ln=True)
-            pdf.set_font("Arial", '', 12)
-            for i, item in enumerate(items[:max_lines], 1):
-                prefix = f"{i}. " if numbered else "- "
-                pdf.multi_cell(140, 6, prefix + safe(item))
-            pdf.ln(1)
+    # Prevention Tips
+    tips = details.get("prevention", [])
+    if tips:
+        pdf.set_font("Arial", 'B', 12)
+        pdf.cell(0, 10, safe("Prevention Tips:"), ln=True)
+        pdf.set_font("Arial", '', 12)
+        for tip in tips:
+            pdf.multi_cell(0, 8, safe(f"- {tip}"))
+        pdf.ln(3)
 
-    write_section("Description:", [details.get("description")] if details.get("description") else [], max_lines=1)
-    write_section("Recommended Fungicides:", details.get("fungicides", []), max_lines=2)
-    write_section("Treatment Steps:", details.get("steps", []), numbered=True, max_lines=3)
-    write_section("Prevention Tips:", details.get("prevention", []), numbered=True, max_lines=3)
-
-    # Right Section: Images
-    def add_image_section(img_path, label, current_y):
-        if not os.path.exists(img_path):
-            pdf.set_xy(170, current_y)
-            pdf.set_font("Arial", 'I', 11)
-            pdf.cell(110, 10, f"{label} not available.", ln=True)
-            return current_y + 16
-
-        try:
-            with Image.open(img_path) as img:
-                w, h = img.size
-                max_w = 110
-                max_h = 60
-                ratio = min(max_w / w, max_h / h)
-                img_w = w * ratio
-                img_h = h * ratio
-                img_x = 170 + (110 - img_w) / 2
-                label_y = current_y + 2
-
+    # Annotated Image
+    if image_path:
+        full_image_path = os.path.join("static", image_path)
+        if os.path.exists(full_image_path):
+            try:
                 pdf.set_font("Arial", 'B', 12)
-                pdf.set_xy(img_x, label_y)
-                pdf.cell(img_w, 7, label, ln=True, align='C')
+                pdf.cell(0, 10, safe("Annotated Image:"), ln=True)
+                pdf.image(full_image_path, x=30, w=150)  # scaled to fit nicely
+            except RuntimeError:
+                pdf.cell(0, 10, "(Unable to embed image)", ln=True)
 
-                image_y = label_y + 9
-                pdf.set_draw_color(70, 70, 70)
-                pdf.set_line_width(0.4)
-                pdf.rect(img_x - 1, image_y - 1, img_w + 2, img_h + 2)
-                pdf.image(img_path, x=img_x, y=image_y, w=img_w, h=img_h)
-
-                return image_y + img_h + 4
-        except:
-            pdf.set_xy(170, current_y)
-            pdf.set_font("Arial", 'I', 11)
-            pdf.cell(110, 10, f"{label} could not be loaded.", ln=True)
-            return current_y + 16
-
-    img_y = 44
-    img_y = add_image_section(os.path.join("static", original_filename), "Original Image", img_y)
-    img_y = add_image_section(os.path.join("static", detected_filename), "Annotated Image", img_y)
-
-    # Footer
-    pdf.set_y(195)
-    pdf.set_font("Arial", 'I', 10)
-    pdf.set_text_color(90)
-    pdf.cell(0, 10, u"\u00A9 Plant AI | Generated by Team SixthSense", align='C')
-
-    # Save
+    # Save the report
     filename = f"{uuid.uuid4().hex}.pdf"
     pdf.output(os.path.join("static", filename))
     return filename
