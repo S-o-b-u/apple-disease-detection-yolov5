@@ -47,8 +47,11 @@ export function ResultsPanel({ image, results, currentLanguage, onNewAnalysis }:
         return;
       }
 
-      setIsLoadingAudio(true);
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
       audioRef.current.src = audioUrl;
+
+      setIsLoadingAudio(true);
 
       audioRef.current.onerror = () => {
         setAudioError(t.results.audioError);
@@ -101,6 +104,10 @@ export function ResultsPanel({ image, results, currentLanguage, onNewAnalysis }:
     }
   };
 
+  const formatConfidence = (confidence: number) => {
+    return confidence <= 1 ? (confidence * 100).toFixed(1) : confidence.toFixed(1);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -109,14 +116,12 @@ export function ResultsPanel({ image, results, currentLanguage, onNewAnalysis }:
       className="min-h-screen pt-24 pb-8"
     >
       <div className="container mx-auto px-4">
-        {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-white mb-2">{t.results.title}</h2>
           <p className="text-white/60">Analysis complete - {results.length} issues detected</p>
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          {/* Image Display */}
           <div className="xl:col-span-2">
             <Card className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl overflow-hidden`}>
               <CardHeader className="flex flex-row items-center justify-between">
@@ -136,10 +141,11 @@ export function ResultsPanel({ image, results, currentLanguage, onNewAnalysis }:
                   <img
                     ref={imageRef}
                     src={results[0]?.imageUrl || image.url}
-                    alt="Analyzed leaf"
+                    alt="Analyzed apple leaf"
                     className="w-full h-auto max-h-96 object-contain bg-black/20"
                   />
-                  {/* Animated Markers */}
+
+                  {/* Uncomment below to show markers */}
                   {/* {showMarkers && (
                     <AnimatePresence>
                       {results.map((result, index) => (
@@ -167,14 +173,10 @@ export function ResultsPanel({ image, results, currentLanguage, onNewAnalysis }:
                 </div>
               </CardContent>
             </Card>
-            
           </div>
 
-          {/* Detection Details */}
           <div className="space-y-6">
-            {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              {/* Backend PDF Download */}
               {results[0]?.reportUrl && (
                 <a
                   href={results[0].reportUrl}
@@ -197,7 +199,6 @@ export function ResultsPanel({ image, results, currentLanguage, onNewAnalysis }:
               </Button>
             </div>
 
-            {/* Result List */}
             {results.map((result, index) => (
               <motion.div
                 key={index}
@@ -225,10 +226,10 @@ export function ResultsPanel({ image, results, currentLanguage, onNewAnalysis }:
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-white/60 text-sm">{t.results.confidence}</span>
                         <span className="text-white text-sm font-medium">
-                          {(result.confidence * 100).toFixed(1)}%
+                          {formatConfidence(result.confidence)}%
                         </span>
                       </div>
-                      <Progress value={result.confidence * 100} className="h-2" />
+                      <Progress value={parseFloat(formatConfidence(result.confidence))} className="h-2" />
                     </div>
 
                     <div className="flex items-center justify-between">
@@ -306,7 +307,6 @@ export function ResultsPanel({ image, results, currentLanguage, onNewAnalysis }:
                       ×
                     </Button>
                   </div>
-
                   <p className="text-white/80 mb-6">{selectedResult.treatment.description}</p>
 
                   <div className="space-y-4">
@@ -327,13 +327,6 @@ export function ResultsPanel({ image, results, currentLanguage, onNewAnalysis }:
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Audio Element */}
-        <audio
-          ref={audioRef}
-          onEnded={() => setIsPlayingAudio(false)}
-          onError={() => setIsPlayingAudio(false)}
-        />
       </div>
     </motion.div>
   );

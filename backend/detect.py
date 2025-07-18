@@ -27,7 +27,7 @@ model = torch.hub.load(
     model='custom',
     path='model/best.pt',
     source='github',
-    force_reload=True,
+    force_reload=False,  # <--- don't reload on every request
 )
 
 TREATMENTS = {

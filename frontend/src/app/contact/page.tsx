@@ -171,7 +171,7 @@ export default function ContactPage() {
                       <p className="text-white/80">{tForm.successSubtitle}</p>
                       <Button
                         onClick={() => setIsSubmitted(false)}
-                        className={`mt-4 bg-gradient-to-r ${NEON_GRADIENTS.primary} text-white`}
+                        className="mt-4 bg-gradient-to-r from-white via-white to-gray-100 text-black hover:from-gray-50 hover:to-gray-200"
                       >
                         {tForm.sendAnother}
                       </Button>
@@ -190,7 +190,7 @@ export default function ContactPage() {
                             onChange={handleChange}
                             required
                             placeholder={tForm.namePlaceholder}
-                            className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50`}
+                            className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50 hover:bg-transparent`}
                           />
                         </div>
                         <div>
@@ -246,12 +246,12 @@ export default function ContactPage() {
                           onChange={handleChange}
                           required
                           placeholder={tForm.messagePlaceholder}
-                          className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50 min-h-[120px]`}
+                          className={`${GLASSMORPHISM_STYLES.base} border-white/30 text-white placeholder:text-white/50 min-h-[120px] hover:bg-transparent`}
                         />
                       </div>
                       <Button
                         type="submit"
-                        className={`w-full bg-gradient-to-r ${NEON_GRADIENTS.primary} text-white py-3 rounded-xl`}
+                        className="w-full bg-gradient-to-r from-white via-white to-gray-100 text-black hover:from-gray-50 hover:to-gray-200 py-3 rounded-xl"
                       >
                         <Send className="w-4 h-4 mr-2" />
                         {tForm.submitButton}
