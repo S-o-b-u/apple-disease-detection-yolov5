@@ -2,14 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  Target,
-  Heart,
-  Shield,
-  Users,
-  Star,
-  ArrowRight,
-} from "lucide-react";
+import { Target, Heart, Shield, Users, Star, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -37,7 +30,7 @@ export default function AboutPage() {
     {
       name: "Snehasish Saha",
       role: "Plant Pathologist",
-      image: "images/senhasish.JPG",
+      image: "images/snehasish.jpg",
       bio: "20+ yrs in apple disease research.",
       expertise: ["Pathology", "Field Research"],
     },
@@ -170,21 +163,25 @@ export default function AboutPage() {
                 </h2>
                 <div className="space-y-4 text-white/80">
                   <p>
-                    Founded in 2019 by a team of agricultural researchers and AI
-                    engineers, Apple Disease AI emerged from a simple yet
-                    powerful vision: to democratize access to expert plant
-                    pathology knowledge through artificial intelligence.
+                    Launched in 2025 by a team of AI developers and agricultural
+                    tech enthusiasts, our Apple Leaf Disease Detection system
+                    was built with a vision to make cutting-edge plant health
+                    diagnostics accessible to all farmers.
                   </p>
                   <p>
-                    After witnessing devastating crop losses due to undetected
-                    diseases, our founders combined their expertise in machine
-                    learning, computer vision, and plant pathology to create the
-                    world's most accurate apple disease detection system.
+                    Combining the power of YOLOv5 and PyTorch for real-time
+                    object detection, we designed a FastAPI backend that
+                    generates accurate disease reports, actionable treatment
+                    advice, and even Hindi voice guidance for native
+                    accessibility.
                   </p>
                   <p>
-                    Today, we're proud to serve over 50,000 farmers across 25
-                    countries, helping them protect their harvests and build
-                    more sustainable farming practices.
+                    The frontend, developed using Next.js, Tailwind CSS, and
+                    Framer Motion, delivers a seamless and modern user
+                    experience, while MongoDB powers our secure data storage.
+                    Our mission is to help farmers diagnose diseases faster,
+                    reduce crop loss, and promote sustainable apple farming
+                    across the globe.
                   </p>
                 </div>
               </div>
@@ -271,8 +268,12 @@ export default function AboutPage() {
                   <h3 className="text-base font-bold text-white mb-0.5 text-center">
                     {member.name}
                   </h3>
-                  <p className="text-green-400 text-xs mb-1 font-medium text-center">{member.role}</p>
-                  <p className="text-white/70 text-xs mb-2 text-center">{member.bio}</p>
+                  <p className="text-green-400 text-xs mb-1 font-medium text-center">
+                    {member.role}
+                  </p>
+                  <p className="text-white/70 text-xs mb-2 text-center">
+                    {member.bio}
+                  </p>
                   <div className="flex flex-wrap gap-1 justify-center">
                     {member.expertise.map((skill, skillIndex) => (
                       <span
@@ -289,7 +290,7 @@ export default function AboutPage() {
           </motion.section>
 
           {/* Timeline */}
-          <motion.section
+          {/* <motion.section
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.0 }}
@@ -341,7 +342,7 @@ export default function AboutPage() {
                 ))}
               </div>
             </div>
-          </motion.section>
+          </motion.section> */}
 
           {/* Testimonials */}
           <motion.section
@@ -419,7 +420,7 @@ export default function AboutPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-green-500 via-emerald-500 to-lime-400 hover:from-green-400 hover:to-emerald-400 text-black font-semibold px-8 py-3 rounded-xl shadow-lg transition-all duration-300"
+                  className="bg-gradient-to-r from-white to-gray-200 hover:from-gray-100 hover:to-white text-black font-semibold px-8 py-3 rounded-xl shadow-lg transition-all duration-300"
                 >
                   Start Free Analysis
                   <ArrowRight className="w-5 h-5 ml-2" />
@@ -428,7 +429,7 @@ export default function AboutPage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-green-500 text-green-300 hover:bg-green-900/30 px-8 py-3 rounded-xl"
+                  className="border-white text-white hover:bg-white/10 px-8 py-3 rounded-xl"
                 >
                   Contact Our Team
                 </Button>
