@@ -44,14 +44,14 @@ def detect_disease(file):
         except:
             pass
 
-    # ✅ Save original image
+    # ✅ Save uploaded file temporarily
     img = Image.open(file.file).convert("RGB")
-    original_filename = f"{uuid.uuid4().hex}.jpg"
-    original_path = os.path.join(STATIC_DIR, original_filename)
-    img.save(original_path)
+    temp_filename = f"{uuid.uuid4().hex}_temp.jpg"
+    temp_path = os.path.join(STATIC_DIR, temp_filename)
+    img.save(temp_path)
 
     # ✅ Run detection
-    results = model(original_path)
+    results = model(temp_path)
 
     # ✅ Render annotated image
     rendered = results.render()[0]
@@ -69,4 +69,10 @@ def detect_disease(file):
     # ✅ Lookup treatment
     treatment = TREATMENTS.get(disease, "No treatment found.")
 
-    return original_filename, detected_filename, disease, treatment, 95.0  # mock confidence
+    # ✅ Optionally delete the temp original image
+    try:
+        os.remove(temp_path)
+    except:
+        pass
+
+    return detected_filename, disease, treatment, 95.0  # mock confidence

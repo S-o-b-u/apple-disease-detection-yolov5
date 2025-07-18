@@ -27,16 +27,14 @@ def build_static_url(filename: str) -> str:
 
 @app.post("/predict/")
 async def predict(file: UploadFile = File(...)):
-    # Step 1: Detection
-    original_filename, annotated_filename, disease, treatment, confidence = detect_disease(file)
+    # Step 1: Detection (only annotated image now)
+    annotated_filename, disease, treatment, confidence = detect_disease(file)
 
-    # Step 2: Report PDF
+    # Step 2: Report PDF (pass only annotated image)
     report_filename = generate_report(
         disease,
         treatment,
-        original_filename=original_filename,
-        detected_filename=annotated_filename,
-        confidence=confidence
+        image_path=annotated_filename  # ✅ FIXED: corrected keyword argument
     )
 
     # Step 3: Hindi Audio
@@ -51,7 +49,6 @@ async def predict(file: UploadFile = File(...)):
             "x": 100, "y": 100, "width": 200, "height": 200  # Placeholder
         },
         "imageUrl": build_static_url(annotated_filename),
-        "originalUrl": build_static_url(original_filename),
         "reportUrl": build_static_url(report_filename),
         "treatment": {
             "title": f"{disease} Treatment",
