@@ -1,7 +1,7 @@
 import platform
 import pathlib
 
-# ✅ Fix for Windows to avoid PosixPath error
+# ✅ Fix for Windows paths
 if platform.system() == "Windows":
     pathlib.PosixPath = pathlib.WindowsPath
 
@@ -9,20 +9,19 @@ import torch
 from PIL import Image
 import uuid
 import os
-import requests
 
-# ✅ Manually patch torch.hub to use token for authentication
+# ✅ GitHub token to bypass YOLOv5 rate-limiting
 GITHUB_TOKEN = "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"
 os.environ["GITHUB_TOKEN"] = GITHUB_TOKEN
 if GITHUB_TOKEN:
     torch.hub._DEFAULT_GITHUB_TOKEN = GITHUB_TOKEN
-    torch.hub._validate_not_a_forked_repo = lambda *args, **kwargs: None  # Optional: disable fork validation if needed
+    torch.hub._validate_not_a_forked_repo = lambda *args, **kwargs: None
 
-# ✅ Define static directory path (inside /backend/static)
+# ✅ Static dir
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 os.makedirs(STATIC_DIR, exist_ok=True)
 
-# ✅ Load the YOLOv5 model (custom-trained weights)
+# ✅ Load custom-trained model
 model = torch.hub.load(
     repo_or_dir='ultralytics/yolov5',
     model='custom',
@@ -38,39 +37,36 @@ TREATMENTS = {
 }
 
 def detect_disease(file):
-    # ✅ Clean static/ folder
+    # ✅ Clean static/ folder (optional: remove in production)
     for f in os.listdir(STATIC_DIR):
-        file_path = os.path.join(STATIC_DIR, f)
         try:
-            os.remove(file_path)
-        except Exception:
+            os.remove(os.path.join(STATIC_DIR, f))
+        except:
             pass
 
-    # ✅ Save uploaded image
+    # ✅ Save original image
     img = Image.open(file.file).convert("RGB")
-    image_name = f"{uuid.uuid4().hex}.jpg"
-    input_path = os.path.join(STATIC_DIR, image_name)
-    img.save(input_path)
+    original_filename = f"{uuid.uuid4().hex}.jpg"
+    original_path = os.path.join(STATIC_DIR, original_filename)
+    img.save(original_path)
 
     # ✅ Run detection
-    results = model(input_path)
+    results = model(original_path)
 
-    # ✅ Render image with bounding boxes in memory
-    rendered = results.render()[0]  # returns numpy array
-
-    # ✅ Save rendered image manually — no YOLO .save() used
+    # ✅ Render annotated image
+    rendered = results.render()[0]
     from PIL import Image as PILImage
-    rendered_image = PILImage.fromarray(rendered)
-    rendered_image.save(input_path)  # overwrite original image
+    annotated_img = PILImage.fromarray(rendered)
+
+    detected_filename = f"{uuid.uuid4().hex}_detected.jpg"
+    detected_path = os.path.join(STATIC_DIR, detected_filename)
+    annotated_img.save(detected_path)
 
     # ✅ Extract disease name
     df = results.pandas().xyxy[0]
-    if df.empty:
-        disease = "Healthy"
-    else:
-        disease = df["name"][0].capitalize()
+    disease = df["name"][0].capitalize() if not df.empty else "Healthy"
 
-    # ✅ Treatment lookup
+    # ✅ Lookup treatment
     treatment = TREATMENTS.get(disease, "No treatment found.")
 
-    return image_name, disease, treatment
+    return original_filename, detected_filename, disease, treatment, 95.0  # mock confidence
