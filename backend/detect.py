@@ -31,10 +31,24 @@ model = torch.hub.load(
 )
 
 TREATMENTS = {
-    "Rust": "Use Myclobutanil fungicide. Remove infected leaves.",
-    "Scab": "Use Captan or Mancozeb fungicides.",
-    "Healthy": "No disease detected."
+    "Rust": (
+        "Rust causes orange spots on leaves and weakens the tree. "
+        "Treat by removing affected leaves and spraying Myclobutanil. "
+        "Avoid planting near juniper trees."
+    ),
+
+    "Scab": (
+        "Scab shows as dark spots on leaves and fruits. "
+        "Use Captan or Mancozeb sprays and keep the tree area clean and airy."
+    ),
+
+    "Healthy": (
+        "The leaf looks healthy. "
+        "Continue regular care and monitor for any future symptoms."
+    )
 }
+
+
 
 def detect_disease(file):
     # ✅ Clean static/ folder (optional: remove in production)

@@ -1,107 +1,144 @@
 from fpdf import FPDF
 import uuid
 import os
+from PIL import Image
 
-# ✅ Unicode-safe text converter
+# ✅ Safe text utility
 def safe(text):
     return text.replace("–", "-").replace("—", "-").replace("“", '"').replace("”", '"')
 
-# ✅ Disease info dictionary
+# ✅ Disease data
 DISEASE_DETAILS = {
     "Rust": {
-        "description": "Apple rust is a fungal disease that causes orange or rust-colored spots on leaves, leading to premature leaf drop and reduced fruit yield.",
+        "description": (
+            "Apple rust is a fungal disease that primarily affects leaves, producing bright orange "
+            "or rust-colored spots. The infection weakens the tree by reducing its ability to photosynthesize, "
+            "often causing early leaf fall. The disease cycles between apple trees and junipers, which act as alternate hosts."
+        ),
         "fungicides": ["Myclobutanil", "Propiconazole"],
         "steps": [
-            "Identify and remove infected leaves from the tree.",
-            "Apply a fungicide like myclobutanil at the early stage of the infection.",
-            "Repeat the spray every 10-14 days during the growing season.",
-            "Avoid planting juniper species near apple trees, as they are alternate hosts for rust."
+            "Inspect apple trees regularly during early spring and summer. Remove and dispose of rust-affected leaves immediately. Do not compost them, as this may spread the spores.",
+            "Apply fungicide such as Myclobutanil at the bud-break stage to suppress early infection.",
+            "Repeat fungicide applications every 10–14 days during the growing season, especially after rainfall or in humid conditions.",
+            "Avoid planting juniper trees near apple orchards, as they act as alternate hosts. Remove existing junipers if disease is persistent."
         ],
         "prevention": [
-            "Plant rust-resistant apple varieties.",
-            "Maintain good air circulation by pruning.",
-            "Avoid overhead irrigation."
+            "Plant rust-resistant apple varieties like Liberty or Redfree.",
+            "Maintain good air circulation by pruning crowded branches.",
+            "Avoid overhead irrigation and water only at the base of the plant.",
+            "Clear plant debris and fallen leaves from the orchard to reduce fungal spores."
         ]
     },
     "Scab": {
-        "description": "Apple scab causes dark, scabby lesions on leaves and fruit. It reduces yield and makes apples unmarketable.",
+        "description": (
+            "Apple scab is a fungal disease that causes dark, scabby lesions on leaves and fruit. "
+            "It thrives in moist, cool environments and can significantly affect fruit quality and yield. "
+            "The disease spreads through fungal spores released from fallen infected leaves."
+        ),
         "fungicides": ["Captan", "Mancozeb"],
         "steps": [
-            "Remove and destroy fallen infected leaves and fruit.",
-            "Apply fungicides at the green tip stage.",
-            "Continue spraying at 7-10 day intervals.",
-            "Ensure proper pruning to allow sunlight penetration."
+            "Remove and destroy fallen leaves and infected fruit from the ground. This reduces the source of fungal spores.",
+            "Apply fungicide like Captan or Mancozeb starting at the green tip stage of bud development.",
+            "Continue fungicide sprays every 7–10 days during the rainy season, especially after rainfall events.",
+            "Prune trees to improve air flow and sunlight penetration, which helps to reduce humidity and fungal spread."
         ],
         "prevention": [
-            "Plant scab-resistant apple varieties.",
-            "Use proper spacing between trees for airflow.",
-            "Rake and compost leaves far from the orchard."
+            "Choose scab-resistant varieties such as Freedom, Enterprise, or Liberty.",
+            "Provide proper spacing between trees to encourage airflow and reduce moisture.",
+            "Apply mulch properly to suppress soil-borne spores but avoid contact with the tree trunk.",
+            "Compost debris and leaves far from the orchard area, or burn them if allowed locally."
         ]
     },
     "Healthy": {
-        "description": "No disease detected. This is a healthy apple leaf.",
+        "description": (
+            "The apple leaf is healthy with no visible disease symptoms. This indicates proper care, good environmental conditions, "
+            "and absence of fungal or bacterial infections. Continued monitoring and good orchard management will help maintain this condition."
+        ),
         "fungicides": [],
         "steps": [],
         "prevention": [
-            "Continue regular monitoring of leaves.",
-            "Maintain good orchard hygiene.",
-            "Apply preventive sprays only if needed."
+            "Continue to inspect your orchard weekly during the growing season for any early signs of disease or pests.",
+            "Maintain proper pruning to allow good air circulation and sunlight exposure.",
+            "Keep the orchard floor clean and remove plant debris regularly.",
+            "Use preventive organic sprays only if weather conditions favor disease development."
         ]
     }
 }
 
+# ✅ PDF Class
+class VintagePDF(FPDF):
+    def header(self):
+        self.set_fill_color(245, 235, 220)  # Vintage beige
+        self.rect(0, 0, 210, 297, 'F')
+        self.set_draw_color(139, 69, 19)  # SaddleBrown
+        self.set_line_width(1.5)
+        self.rect(7, 7, 196, 283)
+
+    def draw_footer(self):
+        self.set_y(-18)
+        self.set_font("Arial", 'I', 10)
+        self.set_text_color(60, 60, 60)
+        self.cell(0, 10, "© PLANT AI | GENERATED BY TEAM SIXTH SENSE", 0, 0, 'C')
+
+# ✅ Report Generator
 def generate_report(disease, treatment, image_path=None):
-    pdf = FPDF()
-    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf = VintagePDF()
+    pdf.set_auto_page_break(auto=False)
     pdf.add_page()
+
     pdf.set_font("Arial", 'B', 16)
-    pdf.cell(0, 10, safe("Apple Leaf Disease Diagnosis Report"), ln=True, align='C')
-
+    pdf.cell(0, 10, safe("AI Powered Crop Disease Diagnosis"), ln=True, align='C')
     pdf.ln(5)
-    pdf.set_font("Arial", '', 12)
 
-    # Disease Detected
     pdf.set_font("Arial", 'B', 12)
-    pdf.cell(0, 10, safe(f"Disease Detected: {disease}"), ln=True)
+    pdf.cell(0, 10, f"Disease Detected: {safe(disease)}", ln=True)
     pdf.set_font("Arial", '', 12)
-
-    details = DISEASE_DETAILS.get(disease, {})
     pdf.ln(3)
 
+    safe_height_limit = 265
+
+    def check_space_and_break(extra_height):
+        if pdf.get_y() + extra_height > safe_height_limit:
+            pdf.set_y(safe_height_limit - extra_height)
+
     # Description
-    description = details.get("description", "")
+    description = DISEASE_DETAILS.get(disease, {}).get("description", "")
     if description:
+        check_space_and_break(30)
         pdf.multi_cell(0, 8, safe(description))
         pdf.ln(2)
 
     # Fungicides
-    fungicides = details.get("fungicides", [])
+    fungicides = DISEASE_DETAILS.get(disease, {}).get("fungicides", [])
     if fungicides:
+        check_space_and_break(30)
         pdf.set_font("Arial", 'B', 12)
-        pdf.cell(0, 10, safe("Recommended Fungicides:"), ln=True)
+        pdf.cell(0, 10, "Recommended Fungicides:", ln=True)
         pdf.set_font("Arial", '', 12)
-        for f in fungicides:
-            pdf.cell(0, 8, safe(f"- {f}"), ln=True)
+        for item in fungicides:
+            pdf.cell(0, 8, f"- {safe(item)}", ln=True)
         pdf.ln(2)
 
     # Treatment Steps
-    steps = details.get("steps", [])
+    steps = DISEASE_DETAILS.get(disease, {}).get("steps", [])
     if steps:
+        check_space_and_break(50)
         pdf.set_font("Arial", 'B', 12)
-        pdf.cell(0, 10, safe("Treatment Steps:"), ln=True)
+        pdf.cell(0, 10, "Treatment Steps:", ln=True)
         pdf.set_font("Arial", '', 12)
-        for step in steps:
-            pdf.multi_cell(0, 8, safe(f"-> {step}"))
+        for i, step in enumerate(steps, 1):
+            pdf.multi_cell(0, 8, f"{i}. {safe(step)}")
         pdf.ln(2)
 
     # Prevention Tips
-    tips = details.get("prevention", [])
+    tips = DISEASE_DETAILS.get(disease, {}).get("prevention", [])
     if tips:
+        check_space_and_break(50)
         pdf.set_font("Arial", 'B', 12)
-        pdf.cell(0, 10, safe("Prevention Tips:"), ln=True)
+        pdf.cell(0, 10, "Prevention Tips:", ln=True)
         pdf.set_font("Arial", '', 12)
-        for tip in tips:
-            pdf.multi_cell(0, 8, safe(f"- {tip}"))
+        for i, tip in enumerate(tips, 1):
+            pdf.multi_cell(0, 8, f"{i}. {safe(tip)}")
         pdf.ln(3)
 
     # Annotated Image
@@ -109,13 +146,50 @@ def generate_report(disease, treatment, image_path=None):
         full_image_path = os.path.join("static", image_path)
         if os.path.exists(full_image_path):
             try:
+                current_y = pdf.get_y()
+                bottom_margin = 15
+                available_height = 297 - current_y - bottom_margin
+
+                # Use PIL to get actual image aspect ratio
+                with Image.open(full_image_path) as img:
+                    img_width, img_height = img.size
+                    aspect_ratio = img_width / img_height
+
+                # Max width and height to ensure fit
+                max_width = 140
+                max_height = min(available_height - 10, 60)  # Shrink max height if content is long
+
+                # Scale while preserving aspect ratio
+                if aspect_ratio >= 1:
+                    display_width = min(max_width, aspect_ratio * max_height)
+                    display_height = display_width / aspect_ratio
+                else:
+                    display_height = max_height
+                    display_width = aspect_ratio * display_height
+
+                # Position
+                x = (210 - display_width) / 2
+                y = pdf.get_y()
+
                 pdf.set_font("Arial", 'B', 12)
-                pdf.cell(0, 10, safe("Annotated Image:"), ln=True)
-                pdf.image(full_image_path, x=30, w=150)  # scaled to fit nicely
+                pdf.cell(0, 10, "Annotated Image:", ln=True)
+
+                # Draw black border
+                pdf.set_draw_color(0, 0, 0)
+                pdf.set_line_width(0.5)
+                pdf.rect(x - 1, y + 9, display_width + 2, display_height + 2)
+
+                # Insert image
+                pdf.image(full_image_path, x=x, y=y + 10, w=display_width, h=display_height)
             except RuntimeError:
                 pdf.cell(0, 10, "(Unable to embed image)", ln=True)
 
-    # Save the report
+
+    # Footer
+    pdf.set_y(279)
+    pdf.draw_footer()
+
     filename = f"{uuid.uuid4().hex}.pdf"
-    pdf.output(os.path.join("static", filename))
+    output_path = os.path.join("static", filename)
+    pdf.output(output_path)
     return filename
