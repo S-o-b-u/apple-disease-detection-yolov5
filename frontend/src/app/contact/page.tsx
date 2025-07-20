@@ -20,11 +20,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Navigation } from "@/components/Navigation";
 import { GLASSMORPHISM_STYLES, NEON_GRADIENTS } from "@/lib/constants";
-import SplitText from "@/components/animations/SplitText";
+import VariableProximity from "@/components/animations/VariableProximity";
 import ShinyText from "@/components/animations/ShinyText";
 import { translations } from "@/lib/translations";
+import { useRef } from 'react';
+
 
 export default function ContactPage() {
+  const containerRef = useRef(null);
+
   const [currentLanguage, setCurrentLanguage] = useState<"en" | "hi">("en");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -110,7 +114,6 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-
       <Navigation
         currentLanguage={currentLanguage}
         onLanguageChange={setCurrentLanguage}
@@ -125,17 +128,13 @@ export default function ContactPage() {
             className="text-center mb-16"
           >
             <div className="mb-6 text-center">
-              <SplitText
+              <ShinyText
                 text={t.heading}
-                className="text-4xl md:text-5xl font-extrabold text-white"
-                delay={80}
-                duration={0.6}
-                ease="power3.out"
-                splitType="chars"
-                from={{ opacity: 0, y: 40 }}
-                to={{ opacity: 1, y: 0 }}
+                className="text-4xl md:text-5xl text-white/100"
+                speed={4}
               />
             </div>
+
             <div className="text-center px-4">
               <ShinyText
                 text={t.description}
