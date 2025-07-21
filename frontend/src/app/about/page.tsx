@@ -5,9 +5,9 @@ import { motion } from "framer-motion";
 import { Target, Heart, Shield, Users, Star, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Navigation } from "@/components/Navigation";
 import { GLASSMORPHISM_STYLES, NEON_GRADIENTS } from "@/lib/constants";
+import FluidGlassWrapper from "@/components/ui/FluidGlassWrapper";
 
 export default function AboutPage() {
   const [currentLanguage, setCurrentLanguage] = useState("en");
@@ -42,7 +42,7 @@ export default function AboutPage() {
       expertise: ["Pathology", "Field Research"],
     },
     {
-      name: "Sekh Arif Ali",
+      name: "Sk Arif Ali",
       role: "Plant Pathologist",
       image: "images/arif.jpg",
       bio: "20+ yrs in apple disease research.",
@@ -85,15 +85,6 @@ export default function AboutPage() {
         "Perfect for organic farming. The treatment recommendations are environmentally conscious and effective.",
       rating: 5,
     },
-  ];
-
-  const milestones = [
-    { year: "2019", event: "Company founded by agricultural AI researchers" },
-    { year: "2020", event: "First AI model deployed with 85% accuracy" },
-    { year: "2021", event: "Reached 10,000 active users worldwide" },
-    { year: "2022", event: "Achieved 99%+ accuracy, launched mobile app" },
-    { year: "2023", event: "Expanded to 25 countries, 50,000+ users" },
-    { year: "2024", event: "Launched multilingual support and audio guidance" },
   ];
 
   const coreValues = [
@@ -288,61 +279,6 @@ export default function AboutPage() {
               ))}
             </div>
           </motion.section>
-
-          {/* Timeline */}
-          {/* <motion.section
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.0 }}
-            className="mb-20"
-          >
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-white mb-4">
-                Our Journey
-              </h2>
-              <p className="text-white/80 max-w-2xl mx-auto">
-                Key milestones in our mission to revolutionize agricultural
-                disease detection.
-              </p>
-            </div>
-
-            <div className="max-w-4xl mx-auto">
-              <div className="relative">
-                <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-cyan-400 to-purple-500 rounded-full" />
-
-                {milestones.map((milestone, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                    className={`relative flex items-center mb-8 ${
-                      index % 2 === 0 ? "flex-row" : "flex-row-reverse"
-                    }`}
-                  >
-                    <div
-                      className={`w-1/2 ${
-                        index % 2 === 0 ? "pr-8 text-right" : "pl-8"
-                      }`}
-                    >
-                      <Card
-                        className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl`}
-                      >
-                        <CardContent className="p-4">
-                          <div className="text-cyan-400 font-bold text-lg mb-1">
-                            {milestone.year}
-                          </div>
-                          <div className="text-white/80">{milestone.event}</div>
-                        </CardContent>
-                      </Card>
-                    </div>
-
-                    <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full border-4 border-slate-900" />
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </motion.section> */}
 
           {/* Testimonials */}
           <motion.section
