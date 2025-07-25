@@ -51,13 +51,13 @@ export function Navigation({
           href="/about"
           className="text-white/80 hover:text-white text-sm font-medium transition-colors"
         >
-          About
+          {t.navigation.about}
         </a>
         <a
           href="/contact"
           className="text-white/80 hover:text-white text-sm font-medium transition-colors"
         >
-          Contact Us
+          {t.navigation.contact}
         </a>
 
         {/* Language Dropdown */}
@@ -136,14 +136,14 @@ export function Navigation({
               className="text-sm hover:text-emerald-400 transition"
               onClick={() => setMobileMenuOpen(false)}
             >
-              About
+              {t.navigation.about}
             </a>
             <a
               href="/contact"
               className="text-sm hover:text-emerald-400 transition"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Contact Us
+              {t.navigation.contact}
             </a>
 
             {/* Language Selector */}
