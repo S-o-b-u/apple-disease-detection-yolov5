@@ -4,126 +4,40 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Target, Heart, Shield, Users, Star, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Navigation } from "@/components/Navigation";
 import { GLASSMORPHISM_STYLES, NEON_GRADIENTS } from "@/lib/constants";
-import FluidGlassWrapper from "@/components/ui/FluidGlassWrapper";
+import { translations } from "@/lib/translations";
+
+const AVAILABLE_LANGUAGES = ["en", "hi"] as const;
+type Language = (typeof AVAILABLE_LANGUAGES)[number];
 
 export default function AboutPage() {
-  const [currentLanguage, setCurrentLanguage] = useState("en");
+  const [currentLanguage, setCurrentLanguage] = useState<Language>("en");
+  const t = translations[currentLanguage]?.about ?? translations["en"].about;
 
-  const teamMembers = [
-    {
-      name: "Souvik Rahut",
-      role: "AI Research Lead",
-      image: "images/souvik.jpg",
-      bio: "PhD, 15+ yrs in AI for agriculture.",
-      expertise: ["Machine Learning", "Computer Vision"],
-    },
-    {
-      name: "Shriparna Prasad",
-      role: "Head of Product",
-      image: "images/shriparna.jpeg",
-      bio: "Ex-Apple, mobile & UX expert.",
-      expertise: ["Product", "UX Design"],
-    },
-    {
-      name: "Snehasish Saha",
-      role: "Plant Pathologist",
-      image: "images/snehasish.jpg",
-      bio: "20+ yrs in apple disease research.",
-      expertise: ["Pathology", "Field Research"],
-    },
-    {
-      name: "Trishan Dewanji",
-      role: "Plant Pathologist",
-      image: "images/trishhan.jpg",
-      bio: "20+ yrs in apple disease research.",
-      expertise: ["Pathology", "Field Research"],
-    },
-    {
-      name: "Sk Arif Ali",
-      role: "Plant Pathologist",
-      image: "images/arif.jpg",
-      bio: "20+ yrs in apple disease research.",
-      expertise: ["Pathology", "Field Research"],
-    },
-    {
-      name: "Soumyadip Banerjee",
-      role: "Plant Pathologist",
-      image: "images/brahmon.jpg",
-      bio: "20+ yrs in apple disease research.",
-      expertise: ["Pathology", "Field Research"],
-    },
-  ];
+  const teamMembers = t.teamMembers ?? [];
 
-  const testimonials = [
-    {
-      name: "Robert Johnson",
-      role: "Apple Orchard Owner, Washington",
-      image:
-        "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=400",
-      quote:
-        "This AI system saved my entire harvest last season. Early detection of fire blight allowed me to take immediate action.",
-      rating: 5,
-    },
-    {
-      name: "Maria Gonzalez",
-      role: "Agricultural Consultant, California",
-      image:
-        "https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=400",
-      quote:
-        "The accuracy and speed of diagnosis is remarkable. My clients have seen 40% reduction in crop losses.",
-      rating: 5,
-    },
-    {
-      name: "David Kim",
-      role: "Organic Farm Manager, Oregon",
-      image:
-        "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400",
-      quote:
-        "Perfect for organic farming. The treatment recommendations are environmentally conscious and effective.",
-      rating: 5,
-    },
-  ];
 
-  const coreValues = [
-    {
-      icon: Target,
-      title: "Innovation",
-      description:
-        "Pushing the boundaries of agricultural AI to solve real-world farming challenges",
-    },
-    {
-      icon: Heart,
-      title: "Sustainability",
-      description:
-        "Promoting environmentally responsible farming practices through smart technology",
-    },
-    {
-      icon: Shield,
-      title: "Reliability",
-      description:
-        "Delivering consistent, accurate results that farmers can depend on",
-    },
-    {
-      icon: Users,
-      title: "Accessibility",
-      description:
-        "Making advanced AI technology accessible to farmers of all backgrounds",
-    },
-  ];
+  const testimonials = t.testimonials ?? [];
+  const coreValues = (t.values ?? []).map((val, i) => {
+    const icons = [Target, Heart, Shield, Users];
+    return {
+      ...val,
+      icon: icons[i % icons.length],
+    };
+  });
 
   return (
     <div className="min-h-screen relative overflow-hidden">
       <Navigation
         currentLanguage={currentLanguage}
-        onLanguageChange={setCurrentLanguage}
+        onLanguageChange={(lang: Language) => setCurrentLanguage(lang)}
       />
 
       <main className="relative mt-5 z-10 pt-24 pb-16">
         <div className="container mx-auto px-4">
-          {/* Hero Section */}
+          {/* Hero */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -131,16 +45,14 @@ export default function AboutPage() {
             className="text-center mb-20"
           >
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              About Apple Disease AI
+              {t.heading}
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              We're revolutionizing agriculture with cutting-edge AI technology,
-              helping farmers protect their crops and feed the world
-              sustainably.
+              {t.subheading}
             </p>
           </motion.div>
 
-          {/* Company Story */}
+          {/* Story */}
           <motion.section
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -150,30 +62,12 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
                 <h2 className="text-3xl font-bold text-white mb-6">
-                  Our Story
+                  {t.storyTitle}
                 </h2>
                 <div className="space-y-4 text-white/80">
-                  <p>
-                    Launched in 2025 by a team of AI developers and agricultural
-                    tech enthusiasts, our Apple Leaf Disease Detection system
-                    was built with a vision to make cutting-edge plant health
-                    diagnostics accessible to all farmers.
-                  </p>
-                  <p>
-                    Combining the power of YOLOv5 and PyTorch for real-time
-                    object detection, we designed a FastAPI backend that
-                    generates accurate disease reports, actionable treatment
-                    advice, and even Hindi voice guidance for native
-                    accessibility.
-                  </p>
-                  <p>
-                    The frontend, developed using Next.js, Tailwind CSS, and
-                    Framer Motion, delivers a seamless and modern user
-                    experience, while MongoDB powers our secure data storage.
-                    Our mission is to help farmers diagnose diseases faster,
-                    reduce crop loss, and promote sustainable apple farming
-                    across the globe.
-                  </p>
+                  {(t.story ?? []).map((para, i) => (
+                    <p key={i}>{para}</p>
+                  ))}
                 </div>
               </div>
               <div className="relative">
@@ -187,7 +81,7 @@ export default function AboutPage() {
             </div>
           </motion.section>
 
-          {/* Mission & Values */}
+          {/* Mission */}
           <motion.section
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -196,13 +90,9 @@ export default function AboutPage() {
           >
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-white mb-4">
-                Mission & Values
+                {t.missionTitle}
               </h2>
-              <p className="text-white/80 max-w-2xl mx-auto">
-                Our mission is to empower farmers with AI-driven insights that
-                protect crops, increase yields, and promote sustainable
-                agriculture.
-              </p>
+              <p className="text-white/80 max-w-2xl mx-auto">{t.missionDesc}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -228,7 +118,7 @@ export default function AboutPage() {
             </div>
           </motion.section>
 
-          {/* Team Section */}
+          {/* Team */}
           <motion.section
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -237,11 +127,9 @@ export default function AboutPage() {
           >
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-white mb-4">
-                Meet Our Team
+                {t.teamTitle}
               </h2>
-              <p className="text-white/80 max-w-2xl mx-auto">
-                The people who built this platform.
-              </p>
+              <p className="text-white/80 max-w-2xl mx-auto">{t.teamDesc}</p>
             </div>
 
             <div className="flex flex-row flex-nowrap justify-center gap-6 overflow-x-auto scrollbar-hide pb-2">
@@ -289,11 +177,10 @@ export default function AboutPage() {
           >
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-white mb-4">
-                What Our Users Say
+                {t.testimonialsTitle}
               </h2>
               <p className="text-white/80 max-w-2xl mx-auto">
-                Trusted by farmers worldwide to protect their crops and
-                livelihoods.
+                {t.testimonialsDesc}
               </p>
             </div>
 
@@ -335,7 +222,7 @@ export default function AboutPage() {
             </div>
           </motion.section>
 
-          {/* Call to Action */}
+          {/* CTA */}
           <motion.section
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -346,11 +233,10 @@ export default function AboutPage() {
               className={`${GLASSMORPHISM_STYLES.base} border-white/20 rounded-2xl p-12 max-w-4xl mx-auto`}
             >
               <h2 className="text-3xl font-bold text-white mb-4">
-                Ready to Protect Your Crops?
+                {t.ctaTitle}
               </h2>
               <p className="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
-                Join thousands of farmers who trust our AI technology to detect
-                diseases early and save their harvests.
+                {t.ctaDesc}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -358,7 +244,7 @@ export default function AboutPage() {
                   size="lg"
                   className="bg-gradient-to-r from-white to-gray-200 hover:from-gray-100 hover:to-white text-black font-semibold px-8 py-3 rounded-xl shadow-lg transition-all duration-300"
                 >
-                  Start Free Analysis
+                  {t.ctaButton1}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
 
@@ -367,7 +253,7 @@ export default function AboutPage() {
                   variant="outline"
                   className="border-white text-white hover:bg-white/10 px-8 py-3 rounded-xl"
                 >
-                  Contact Our Team
+                  {t.ctaButton2}
                 </Button>
               </div>
             </Card>
