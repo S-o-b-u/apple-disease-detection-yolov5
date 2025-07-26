@@ -8,7 +8,9 @@ import { Card } from "@/components/ui/card";
 import { Navigation } from "@/components/Navigation";
 import { GLASSMORPHISM_STYLES, NEON_GRADIENTS } from "@/lib/constants";
 import { translations } from "@/lib/translations";
+import dynamic from "next/dynamic";
 
+const Lanyard = dynamic(() => import("@/components/Lanyard"), { ssr: false });
 const AVAILABLE_LANGUAGES = ["en", "hi"] as const;
 type Language = (typeof AVAILABLE_LANGUAGES)[number];
 
@@ -17,7 +19,6 @@ export default function AboutPage() {
   const t = translations[currentLanguage]?.about ?? translations["en"].about;
 
   const teamMembers = t.teamMembers ?? [];
-
 
   const testimonials = t.testimonials ?? [];
   const coreValues = (t.values ?? []).map((val, i) => {
@@ -71,11 +72,12 @@ export default function AboutPage() {
                 </div>
               </div>
               <div className="relative">
-                <img
+                {/* <img
                   src="https://images.pexels.com/photos/1459505/pexels-photo-1459505.jpeg?auto=compress&cs=tinysrgb&w=800"
                   alt="Apple orchard"
                   className="rounded-2xl shadow-2xl"
-                />
+                /> */}
+                <Lanyard position={[0, 0, 20]} gravity={[0, -40, 0]} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl" />
               </div>
             </div>
